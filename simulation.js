@@ -300,15 +300,20 @@ function drawSimulation() {
     canvas.width = gridSize * cellSize;
     canvas.height = gridSize * cellSize;
     
-    // Draw background gradient
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, '#f0f9ff');
-    gradient.addColorStop(1, '#dbeafe');
+    // Draw background with more vibrant gradient
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, '#e0f2fe');
+    gradient.addColorStop(0.3, '#bae6fd');
+    gradient.addColorStop(0.7, '#93c5fd');
+    gradient.addColorStop(1, '#bfdbfe');
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
+    // Add subtle pattern to background
+    drawBackgroundPattern(cellSize);
+    
     // Draw grid
-    ctx.strokeStyle = 'rgba(226, 232, 240, 0.6)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
     ctx.lineWidth = 1;
     
     for (let i = 0; i <= gridSize; i++) {
@@ -404,12 +409,93 @@ function drawSimulation() {
     drawInfoPanel(cellSize);
 }
 
+// Draw background pattern
+function drawBackgroundPattern(cellSize) {
+    // Draw subtle dots pattern
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    
+    for (let x = 0; x < canvas.width; x += cellSize) {
+        for (let y = 0; y < canvas.height; y += cellSize) {
+            if ((x + y) % (cellSize * 2) === 0) {
+                ctx.beginPath();
+                ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    }
+    
+    // Add some decorative elements
+    // Draw compass rose in the corner
+    drawCompassRose(canvas.width - 60, canvas.height - 60, 40);
+}
+
+// Draw compass rose
+function drawCompassRose(x, y, size) {
+    ctx.save();
+    ctx.translate(x, y);
+    
+    // Draw outer circle
+    ctx.beginPath();
+    ctx.arc(0, 0, size/2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Draw cardinal directions
+    const directions = [
+        { letter: 'N', angle: -Math.PI/2 },
+        { letter: 'E', angle: 0 },
+        { letter: 'S', angle: Math.PI/2 },
+        { letter: 'W', angle: Math.PI }
+    ];
+    
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+    ctx.font = 'bold 12px Montserrat';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    directions.forEach(dir => {
+        const x = Math.cos(dir.angle) * (size/2 - 10);
+        const y = Math.sin(dir.angle) * (size/2 - 10);
+        ctx.fillText(dir.letter, x, y);
+    });
+    
+    // Draw compass needle
+    ctx.beginPath();
+    ctx.moveTo(0, -size/3);
+    ctx.lineTo(size/10, 0);
+    ctx.lineTo(0, size/3);
+    ctx.lineTo(-size/10, 0);
+    ctx.closePath();
+    
+    const needleGradient = ctx.createLinearGradient(0, -size/3, 0, size/3);
+    needleGradient.addColorStop(0, 'rgba(239, 68, 68, 0.7)');
+    needleGradient.addColorStop(0.5, 'rgba(239, 68, 68, 0.5)');
+    needleGradient.addColorStop(1, 'rgba(30, 41, 59, 0.7)');
+    
+    ctx.fillStyle = needleGradient;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Draw center dot
+    ctx.beginPath();
+    ctx.arc(0, 0, 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fill();
+    
+    ctx.restore();
+}
+
 // Draw road
 function drawRoad(cellSize) {
     // Draw lanes with gradient
-    const roadGradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    roadGradient.addColorStop(0, '#f1f5f9');
-    roadGradient.addColorStop(1, '#e2e8f0');
+    const roadGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    roadGradient.addColorStop(0, 'rgba(241, 245, 249, 0.7)');
+    roadGradient.addColorStop(1, 'rgba(226, 232, 240, 0.7)');
     ctx.fillStyle = roadGradient;
     
     // Horizontal lanes
@@ -423,7 +509,7 @@ function drawRoad(cellSize) {
     }
     
     // Draw lane markers
-    ctx.strokeStyle = 'rgba(148, 163, 184, 0.7)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
     ctx.setLineDash([cellSize / 4, cellSize / 4]);
     
     // Horizontal lane markers
@@ -448,8 +534,14 @@ function drawRoad(cellSize) {
     for (let x = 0; x < 30; x += 3) {
         for (let y = 0; y < 30; y += 3) {
             if (x > 0 && y > 0) {
-                ctx.fillStyle = 'rgba(226, 232, 240, 0.5)';
+                ctx.fillStyle = 'rgba(203, 213, 225, 0.5)';
                 ctx.fillRect(x * cellSize, y * cellSize, cellSize * 2, cellSize * 2);
+                
+                // Add intersection details
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.beginPath();
+                ctx.arc(x * cellSize + cellSize, y * cellSize + cellSize, cellSize / 2, 0, Math.PI * 2);
+                ctx.stroke();
             }
         }
     }
