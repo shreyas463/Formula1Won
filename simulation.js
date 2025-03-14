@@ -296,16 +296,16 @@ function drawSimulation() {
     
     // Set canvas dimensions - increase cell size for larger simulation area
     const gridSize = 30;
-    const cellSize = 25; // Increased from 20 to 25
+    const cellSize = 30; // Increased from 25 to 30
     canvas.width = gridSize * cellSize;
     canvas.height = gridSize * cellSize;
     
     // Draw background with more vibrant gradient
     const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    gradient.addColorStop(0, '#e0f2fe');
-    gradient.addColorStop(0.3, '#bae6fd');
-    gradient.addColorStop(0.7, '#93c5fd');
-    gradient.addColorStop(1, '#bfdbfe');
+    gradient.addColorStop(0, '#dbeafe'); // Lighter blue
+    gradient.addColorStop(0.3, '#93c5fd'); // Medium blue
+    gradient.addColorStop(0.7, '#60a5fa'); // Deeper blue
+    gradient.addColorStop(1, '#3b82f6'); // Rich blue
     ctx.fillStyle = gradient;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
@@ -313,7 +313,7 @@ function drawSimulation() {
     drawBackgroundPattern(cellSize);
     
     // Draw grid
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.lineWidth = 1;
     
     for (let i = 0; i <= gridSize; i++) {
@@ -336,10 +336,10 @@ function drawSimulation() {
     // Draw path with glow effect
     if (path.length > 1) {
         // Draw glow
-        ctx.shadowColor = 'rgba(37, 99, 235, 0.5)';
-        ctx.shadowBlur = 10;
-        ctx.strokeStyle = 'rgba(37, 99, 235, 0.2)';
-        ctx.lineWidth = 8;
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+        ctx.shadowBlur = 12;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.lineWidth = 10;
         ctx.beginPath();
         ctx.moveTo(path[0].x * cellSize + cellSize/2, path[0].y * cellSize + cellSize/2);
         
@@ -352,8 +352,8 @@ function drawSimulation() {
         // Draw main path
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
-        ctx.strokeStyle = 'rgba(37, 99, 235, 0.6)';
-        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(path[0].x * cellSize + cellSize/2, path[0].y * cellSize + cellSize/2);
         
@@ -365,8 +365,8 @@ function drawSimulation() {
     }
     
     // Draw goal with glow effect
-    ctx.shadowColor = 'rgba(16, 185, 129, 0.5)';
-    ctx.shadowBlur = 10;
+    ctx.shadowColor = 'rgba(16, 185, 129, 0.7)';
+    ctx.shadowBlur = 15;
     ctx.drawImage(
         carImages['flag'],
         goal.x * cellSize + cellSize/6,
@@ -381,6 +381,10 @@ function drawSimulation() {
     
     // Draw other cars
     otherCars.forEach(car => {
+        // Add glow effect for other cars
+        ctx.shadowColor = `rgba(${car.color === 'red' ? '239, 68, 68' : car.color === 'blue' ? '37, 99, 235' : car.color === 'green' ? '16, 185, 129' : '0, 0, 0'}, 0.6)`;
+        ctx.shadowBlur = 10;
+        
         ctx.drawImage(
             carImages[car.color],
             car.x * cellSize + cellSize/6,
@@ -391,8 +395,8 @@ function drawSimulation() {
     });
     
     // Draw agent with glow effect
-    ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
-    ctx.shadowBlur = 10;
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+    ctx.shadowBlur = 15;
     ctx.drawImage(
         carImages['white'],
         agent.x * cellSize + cellSize/6,
@@ -412,13 +416,13 @@ function drawSimulation() {
 // Draw background pattern
 function drawBackgroundPattern(cellSize) {
     // Draw subtle dots pattern
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
     
     for (let x = 0; x < canvas.width; x += cellSize) {
         for (let y = 0; y < canvas.height; y += cellSize) {
             if ((x + y) % (cellSize * 2) === 0) {
                 ctx.beginPath();
-                ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+                ctx.arc(x, y, 2, 0, Math.PI * 2);
                 ctx.fill();
             }
         }
@@ -426,7 +430,7 @@ function drawBackgroundPattern(cellSize) {
     
     // Add some decorative elements
     // Draw compass rose in the corner
-    drawCompassRose(canvas.width - 60, canvas.height - 60, 40);
+    drawCompassRose(canvas.width - 70, canvas.height - 70, 50);
 }
 
 // Draw compass rose
@@ -494,8 +498,8 @@ function drawCompassRose(x, y, size) {
 function drawRoad(cellSize) {
     // Draw lanes with gradient
     const roadGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-    roadGradient.addColorStop(0, 'rgba(241, 245, 249, 0.7)');
-    roadGradient.addColorStop(1, 'rgba(226, 232, 240, 0.7)');
+    roadGradient.addColorStop(0, 'rgba(241, 245, 249, 0.5)');
+    roadGradient.addColorStop(1, 'rgba(226, 232, 240, 0.5)');
     ctx.fillStyle = roadGradient;
     
     // Horizontal lanes
@@ -509,7 +513,7 @@ function drawRoad(cellSize) {
     }
     
     // Draw lane markers
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
     ctx.setLineDash([cellSize / 4, cellSize / 4]);
     
     // Horizontal lane markers
@@ -534,11 +538,11 @@ function drawRoad(cellSize) {
     for (let x = 0; x < 30; x += 3) {
         for (let y = 0; y < 30; y += 3) {
             if (x > 0 && y > 0) {
-                ctx.fillStyle = 'rgba(203, 213, 225, 0.5)';
+                ctx.fillStyle = 'rgba(203, 213, 225, 0.4)';
                 ctx.fillRect(x * cellSize, y * cellSize, cellSize * 2, cellSize * 2);
                 
                 // Add intersection details
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
                 ctx.beginPath();
                 ctx.arc(x * cellSize + cellSize, y * cellSize + cellSize, cellSize / 2, 0, Math.PI * 2);
                 ctx.stroke();
@@ -550,25 +554,30 @@ function drawRoad(cellSize) {
 // Draw info panel
 function drawInfoPanel(cellSize) {
     // Draw semi-transparent background with gradient
-    const panelGradient = ctx.createLinearGradient(10, 10, 10, 70);
-    panelGradient.addColorStop(0, 'rgba(255, 255, 255, 0.9)');
-    panelGradient.addColorStop(1, 'rgba(241, 245, 249, 0.9)');
+    const panelGradient = ctx.createLinearGradient(10, 10, 10, 80);
+    panelGradient.addColorStop(0, 'rgba(30, 58, 138, 0.8)'); // Dark blue
+    panelGradient.addColorStop(1, 'rgba(30, 64, 175, 0.8)'); // Slightly lighter blue
     ctx.fillStyle = panelGradient;
     
     // Draw panel with rounded corners
-    roundRect(ctx, 10, 10, 200, 60, 8, true, true);
+    roundRect(ctx, 10, 10, 220, 70, 10, true, true);
+    
+    // Add border
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.lineWidth = 1;
+    roundRect(ctx, 10, 10, 220, 70, 10, false, true);
     
     // Draw step counter
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 14px Montserrat';
-    ctx.fillText(`Step: ${step}/${maxSteps}`, 20, 30);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 16px Montserrat';
+    ctx.fillText(`Step: ${step}/${maxSteps}`, 25, 35);
     
     // Draw agent position
-    ctx.font = '12px Montserrat';
-    ctx.fillText(`Agent: (${agent.x}, ${agent.y})`, 20, 50);
+    ctx.font = '14px Montserrat';
+    ctx.fillText(`Agent: (${agent.x}, ${agent.y})`, 25, 60);
     
     // Draw goal position
-    ctx.fillText(`Goal: (${goal.x}, ${goal.y})`, 120, 50);
+    ctx.fillText(`Goal: (${goal.x}, ${goal.y})`, 130, 60);
 }
 
 // Helper function to draw rounded rectangles
