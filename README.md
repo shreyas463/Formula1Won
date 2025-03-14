@@ -1,5 +1,9 @@
 # Formula1Won: Self-Driving Car Simulation
 
+<p align="center">
+  <img src="images/logo.png" alt="Formula1Won Logo" width="200">
+</p>
+
 A beautiful, interactive simulation of a self-driving car navigating through traffic.
 
 ![Formula1Won Simulation](https://i.imgur.com/placeholder.png)
@@ -31,9 +35,21 @@ The simulation uses a simple but effective pathfinding algorithm to navigate the
 
 1. **Environment**: The simulation creates a 30×30 grid world with roads, intersections, and other vehicles.
 
-2. **Pathfinding**: The agent uses a greedy approach to move toward the goal, prioritizing either horizontal or vertical movement based on which direction has the greater distance to cover.
+2. **Pathfinding Algorithm**:
+   - The agent uses a greedy approach to move toward the goal
+   - At each step, it calculates the Manhattan distance (horizontal + vertical) to the goal
+   - It prioritizes movement along the axis with the greater distance to cover
+   - This creates an efficient path that minimizes the number of steps needed to reach the goal
+   - The path is dynamically recalculated at each step to respond to changing traffic conditions
 
-3. **Collision Avoidance**: When the agent detects a potential collision with another vehicle, it attempts to change its path by trying the alternative direction (horizontal instead of vertical or vice versa).
+3. **Collision Avoidance System**:
+   - Before each move, the agent checks if the intended position is occupied by another vehicle
+   - If a potential collision is detected, the agent implements a two-step avoidance strategy:
+     1. First, it attempts to change direction (switching from horizontal to vertical movement or vice versa)
+     2. If the alternative direction also leads to a collision, the agent stays in place for one step
+   - This creates realistic "waiting" behavior when the path is temporarily blocked
+   - The system continuously reassesses the environment, allowing the agent to resume movement when safe
+   - Each other vehicle moves randomly, creating dynamic and unpredictable traffic patterns
 
 4. **Visualization**: The simulation renders the environment using HTML5 Canvas, with smooth animations and visual effects to enhance the user experience.
 
@@ -79,10 +95,6 @@ The simulation runs entirely in the browser with no backend dependencies, making
 - HTML5 Canvas for rendering
 - JavaScript for simulation logic
 - CSS for styling
-
-## 📝 License
-
-MIT License
 
 ## 👨‍💻 Created By
 
