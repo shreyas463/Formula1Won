@@ -294,14 +294,26 @@ function drawSimulation() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Set canvas dimensions
+    // Set canvas dimensions - increase cell size for larger simulation area
     const gridSize = 30;
-    const cellSize = 20;
+    const cellSize = 30; // Increased from 25 to 30
     canvas.width = gridSize * cellSize;
     canvas.height = gridSize * cellSize;
     
+    // Draw background with more vibrant gradient
+    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    gradient.addColorStop(0, '#dbeafe'); // Lighter blue
+    gradient.addColorStop(0.3, '#93c5fd'); // Medium blue
+    gradient.addColorStop(0.7, '#60a5fa'); // Deeper blue
+    gradient.addColorStop(1, '#3b82f6'); // Rich blue
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    // Add subtle pattern to background
+    drawBackgroundPattern(cellSize);
+    
     // Draw grid
-    ctx.strokeStyle = '#e2e8f0';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.lineWidth = 1;
     
     for (let i = 0; i <= gridSize; i++) {
@@ -321,10 +333,27 @@ function drawSimulation() {
     // Draw road
     drawRoad(cellSize);
     
-    // Draw path
+    // Draw path with glow effect
     if (path.length > 1) {
-        ctx.strokeStyle = 'rgba(37, 99, 235, 0.3)';
-        ctx.lineWidth = 4;
+        // Draw glow
+        ctx.shadowColor = 'rgba(255, 255, 255, 0.7)';
+        ctx.shadowBlur = 12;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.lineWidth = 10;
+        ctx.beginPath();
+        ctx.moveTo(path[0].x * cellSize + cellSize/2, path[0].y * cellSize + cellSize/2);
+        
+        for (let i = 1; i < path.length; i++) {
+            ctx.lineTo(path[i].x * cellSize + cellSize/2, path[i].y * cellSize + cellSize/2);
+        }
+        
+        ctx.stroke();
+        
+        // Draw main path
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur = 0;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 5;
         ctx.beginPath();
         ctx.moveTo(path[0].x * cellSize + cellSize/2, path[0].y * cellSize + cellSize/2);
         
@@ -335,43 +364,143 @@ function drawSimulation() {
         ctx.stroke();
     }
     
-    // Draw goal
+    // Draw goal with glow effect
+    ctx.shadowColor = 'rgba(16, 185, 129, 0.7)';
+    ctx.shadowBlur = 15;
     ctx.drawImage(
         carImages['flag'],
-        goal.x * cellSize,
-        goal.y * cellSize,
-        cellSize,
-        cellSize
+        goal.x * cellSize + cellSize/6,
+        goal.y * cellSize + cellSize/6,
+        cellSize*2/3,
+        cellSize*2/3
     );
+    
+    // Reset shadow
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
     
     // Draw other cars
     otherCars.forEach(car => {
+        // Add glow effect for other cars
+        ctx.shadowColor = `rgba(${car.color === 'red' ? '239, 68, 68' : car.color === 'blue' ? '37, 99, 235' : car.color === 'green' ? '16, 185, 129' : '0, 0, 0'}, 0.6)`;
+        ctx.shadowBlur = 10;
+        
         ctx.drawImage(
             carImages[car.color],
-            car.x * cellSize,
-            car.y * cellSize,
-            cellSize,
-            cellSize
+            car.x * cellSize + cellSize/6,
+            car.y * cellSize + cellSize/6,
+            cellSize*2/3,
+            cellSize*2/3
         );
     });
     
-    // Draw agent
+    // Draw agent with glow effect
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
+    ctx.shadowBlur = 15;
     ctx.drawImage(
         carImages['white'],
-        agent.x * cellSize,
-        agent.y * cellSize,
-        cellSize,
-        cellSize
+        agent.x * cellSize + cellSize/6,
+        agent.y * cellSize + cellSize/6,
+        cellSize*2/3,
+        cellSize*2/3
     );
+    
+    // Reset shadow
+    ctx.shadowColor = 'transparent';
+    ctx.shadowBlur = 0;
     
     // Draw step counter and info
     drawInfoPanel(cellSize);
 }
 
+// Draw background pattern
+function drawBackgroundPattern(cellSize) {
+    // Draw subtle dots pattern
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    
+    for (let x = 0; x < canvas.width; x += cellSize) {
+        for (let y = 0; y < canvas.height; y += cellSize) {
+            if ((x + y) % (cellSize * 2) === 0) {
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+    }
+    
+    // Add some decorative elements
+    // Draw compass rose in the corner
+    drawCompassRose(canvas.width - 70, canvas.height - 70, 50);
+}
+
+// Draw compass rose
+function drawCompassRose(x, y, size) {
+    ctx.save();
+    ctx.translate(x, y);
+    
+    // Draw outer circle
+    ctx.beginPath();
+    ctx.arc(0, 0, size/2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Draw cardinal directions
+    const directions = [
+        { letter: 'N', angle: -Math.PI/2 },
+        { letter: 'E', angle: 0 },
+        { letter: 'S', angle: Math.PI/2 },
+        { letter: 'W', angle: Math.PI }
+    ];
+    
+    ctx.fillStyle = 'rgba(30, 41, 59, 0.7)';
+    ctx.font = 'bold 12px Montserrat';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    
+    directions.forEach(dir => {
+        const x = Math.cos(dir.angle) * (size/2 - 10);
+        const y = Math.sin(dir.angle) * (size/2 - 10);
+        ctx.fillText(dir.letter, x, y);
+    });
+    
+    // Draw compass needle
+    ctx.beginPath();
+    ctx.moveTo(0, -size/3);
+    ctx.lineTo(size/10, 0);
+    ctx.lineTo(0, size/3);
+    ctx.lineTo(-size/10, 0);
+    ctx.closePath();
+    
+    const needleGradient = ctx.createLinearGradient(0, -size/3, 0, size/3);
+    needleGradient.addColorStop(0, 'rgba(239, 68, 68, 0.7)');
+    needleGradient.addColorStop(0.5, 'rgba(239, 68, 68, 0.5)');
+    needleGradient.addColorStop(1, 'rgba(30, 41, 59, 0.7)');
+    
+    ctx.fillStyle = needleGradient;
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    
+    // Draw center dot
+    ctx.beginPath();
+    ctx.arc(0, 0, 3, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fill();
+    
+    ctx.restore();
+}
+
 // Draw road
 function drawRoad(cellSize) {
-    // Draw lanes
-    ctx.fillStyle = '#f1f5f9';
+    // Draw lanes with gradient
+    const roadGradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    roadGradient.addColorStop(0, 'rgba(241, 245, 249, 0.5)');
+    roadGradient.addColorStop(1, 'rgba(226, 232, 240, 0.5)');
+    ctx.fillStyle = roadGradient;
     
     // Horizontal lanes
     for (let y = 0; y < 30; y += 3) {
@@ -384,7 +513,7 @@ function drawRoad(cellSize) {
     }
     
     // Draw lane markers
-    ctx.strokeStyle = '#94a3b8';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
     ctx.setLineDash([cellSize / 4, cellSize / 4]);
     
     // Horizontal lane markers
@@ -404,28 +533,85 @@ function drawRoad(cellSize) {
     }
     
     ctx.setLineDash([]);
+    
+    // Draw intersections
+    for (let x = 0; x < 30; x += 3) {
+        for (let y = 0; y < 30; y += 3) {
+            if (x > 0 && y > 0) {
+                ctx.fillStyle = 'rgba(203, 213, 225, 0.4)';
+                ctx.fillRect(x * cellSize, y * cellSize, cellSize * 2, cellSize * 2);
+                
+                // Add intersection details
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.beginPath();
+                ctx.arc(x * cellSize + cellSize, y * cellSize + cellSize, cellSize / 2, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+        }
+    }
 }
 
 // Draw info panel
 function drawInfoPanel(cellSize) {
-    // Draw semi-transparent background
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-    ctx.fillRect(10, 10, 200, 60);
-    ctx.strokeStyle = '#e2e8f0';
+    // Draw semi-transparent background with gradient
+    const panelGradient = ctx.createLinearGradient(10, 10, 10, 80);
+    panelGradient.addColorStop(0, 'rgba(30, 58, 138, 0.8)'); // Dark blue
+    panelGradient.addColorStop(1, 'rgba(30, 64, 175, 0.8)'); // Slightly lighter blue
+    ctx.fillStyle = panelGradient;
+    
+    // Draw panel with rounded corners
+    roundRect(ctx, 10, 10, 220, 70, 10, true, true);
+    
+    // Add border
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
     ctx.lineWidth = 1;
-    ctx.strokeRect(10, 10, 200, 60);
+    roundRect(ctx, 10, 10, 220, 70, 10, false, true);
     
     // Draw step counter
-    ctx.fillStyle = '#1e293b';
-    ctx.font = 'bold 14px Montserrat';
-    ctx.fillText(`Step: ${step}/${maxSteps}`, 20, 30);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 16px Montserrat';
+    ctx.fillText(`Step: ${step}/${maxSteps}`, 25, 35);
     
     // Draw agent position
-    ctx.font = '12px Montserrat';
-    ctx.fillText(`Agent: (${agent.x}, ${agent.y})`, 20, 50);
+    ctx.font = '14px Montserrat';
+    ctx.fillText(`Agent: (${agent.x}, ${agent.y})`, 25, 60);
     
     // Draw goal position
-    ctx.fillText(`Goal: (${goal.x}, ${goal.y})`, 120, 50);
+    ctx.fillText(`Goal: (${goal.x}, ${goal.y})`, 130, 60);
+}
+
+// Helper function to draw rounded rectangles
+function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+    if (typeof radius === 'undefined') {
+        radius = 5;
+    }
+    if (typeof radius === 'number') {
+        radius = {tl: radius, tr: radius, br: radius, bl: radius};
+    } else {
+        var defaultRadius = {tl: 0, tr: 0, br: 0, bl: 0};
+        for (var side in defaultRadius) {
+            radius[side] = radius[side] || defaultRadius[side];
+        }
+    }
+    ctx.beginPath();
+    ctx.moveTo(x + radius.tl, y);
+    ctx.lineTo(x + width - radius.tr, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius.tr);
+    ctx.lineTo(x + width, y + height - radius.br);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius.br, y + height);
+    ctx.lineTo(x + radius.bl, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius.bl);
+    ctx.lineTo(x, y + radius.tl);
+    ctx.quadraticCurveTo(x, y, x + radius.tl, y);
+    ctx.closePath();
+    if (fill) {
+        ctx.fill();
+    }
+    if (stroke) {
+        ctx.strokeStyle = 'rgba(226, 232, 240, 0.8)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+    }
 }
 
 // Toggle pause/resume
