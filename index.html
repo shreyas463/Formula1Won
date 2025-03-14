@@ -3,141 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Self-Driving Car Simulation</title>
+    <title>Formula1Won - Self-Driving Car Simulation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #f59e0b;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --success-color: #10b981;
+            --error-color: #ef4444;
+            --info-color: #0ea5e9;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f1f5f9;
+            color: var(--dark-color);
+            line-height: 1.6;
+            padding: 0;
+            margin: 0;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+        
+        .header h1 {
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            font-weight: 400;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
         .container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        
+        .card {
             background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
         }
-        h1 {
-            color: #333;
-            text-align: center;
-            margin-bottom: 30px;
+        
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.75rem;
         }
+        
         .config-selector {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
+        
         .config-card {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 2px solid #dee2e6;
-            min-width: 200px;
+            border: 2px solid #e2e8f0;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
         }
+        
+        .config-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--primary-color);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
         .config-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            border-color: #007bff;
+            box-shadow: var(--shadow-lg);
+            border-color: #cbd5e1;
         }
+        
+        .config-card:hover::before {
+            opacity: 1;
+        }
+        
         .config-card.selected {
-            background-color: #e3f2fd;
-            border-color: #2196f3;
+            background-color: #eff6ff;
+            border-color: var(--primary-color);
         }
+        
+        .config-card.selected::before {
+            opacity: 1;
+        }
+        
+        .config-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.75rem;
+            color: var(--dark-color);
+        }
+        
+        .config-card p {
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+        
         .simulation-container {
-            margin-top: 30px;
+            margin-top: 2rem;
             text-align: center;
         }
-        #simulation-canvas {
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            margin: 20px auto;
-            background-color: #fff;
+        
+        .canvas-wrapper {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin: 1.5rem auto;
+            max-width: 800px;
+            position: relative;
         }
+        
+        #simulation-canvas {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin: 0 auto;
+            background-color: #f8fafc;
+            max-width: 100%;
+            height: auto;
+        }
+        
         .controls {
-            margin-top: 20px;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
         }
+        
         button {
-            padding: 10px 20px;
+            padding: 0.75rem 1.5rem;
             border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
+            border-radius: var(--border-radius);
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-        button:hover {
-            background-color: #0056b3;
+        
+        button svg {
+            width: 1.2rem;
+            height: 1.2rem;
         }
+        
+        #start-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        #start-btn:hover:not(:disabled) {
+            background-color: var(--primary-dark);
+        }
+        
+        #pause-btn {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        
+        #pause-btn:hover:not(:disabled) {
+            background-color: #d97706;
+        }
+        
+        #reset-btn {
+            background-color: #e2e8f0;
+            color: var(--dark-color);
+        }
+        
+        #reset-btn:hover:not(:disabled) {
+            background-color: #cbd5e1;
+        }
+        
         button:disabled {
-            background-color: #cccccc;
+            background-color: #e2e8f0;
+            color: #94a3b8;
             cursor: not-allowed;
+            opacity: 0.7;
         }
+        
         .status {
-            margin-top: 20px;
-            padding: 10px;
-            border-radius: 5px;
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: var(--border-radius);
             text-align: center;
+            font-weight: 500;
         }
+        
         .status.success {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid var(--success-color);
         }
+        
         .status.error {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid var(--error-color);
+        }
+        
+        .status.info {
+            background-color: #e0f2fe;
+            color: #0c4a6e;
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .footer {
+            background-color: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .footer p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        .footer a {
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+        
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .config-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                padding: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
+    <header class="header">
+        <h1>Formula1Won</h1>
+        <p>Advanced Self-Driving Car Simulation</p>
+    </header>
+
     <div class="container">
-        <h1>Self-Driving Car Simulation</h1>
-        
-        <div class="config-selector">
-            <div class="config-card" data-config="1">
-                <h3>Config 1</h3>
-                <p>Basic scenario with 17 cars</p>
-            </div>
-            <div class="config-card" data-config="2">
-                <h3>Config 2</h3>
-                <p>Different car arrangement</p>
-            </div>
-            <div class="config-card" data-config="3">
-                <h3>Config 3</h3>
-                <p>Alternative starting position</p>
-            </div>
-            <div class="config-card" data-config="4">
-                <h3>Config 4</h3>
-                <p>Another variation</p>
-            </div>
-            <div class="config-card" data-config="5">
-                <h3>Config 5</h3>
-                <p>Complex scenario</p>
-            </div>
-        </div>
-
-        <div class="simulation-container">
-            <canvas id="simulation-canvas" width="800" height="600"></canvas>
+        <div class="card">
+            <h2 class="card-title">Select Configuration</h2>
             
-            <div class="controls">
-                <button id="start-btn" disabled>Start Simulation</button>
-                <button id="pause-btn" disabled>Pause</button>
-                <button id="reset-btn" disabled>Reset</button>
+            <div class="config-selector">
+                <div class="config-card" data-config="1">
+                    <h3>Config 1</h3>
+                    <p>Basic scenario with 17 cars</p>
+                </div>
+                <div class="config-card" data-config="2">
+                    <h3>Config 2</h3>
+                    <p>Different car arrangement</p>
+                </div>
+                <div class="config-card" data-config="3">
+                    <h3>Config 3</h3>
+                    <p>Alternative starting position</p>
+                </div>
+                <div class="config-card" data-config="4">
+                    <h3>Config 4</h3>
+                    <p>Another variation</p>
+                </div>
+                <div class="config-card" data-config="5">
+                    <h3>Config 5</h3>
+                    <p>Complex scenario</p>
+                </div>
             </div>
 
-            <div id="status" class="status"></div>
+            <div class="simulation-container">
+                <div class="canvas-wrapper">
+                    <canvas id="simulation-canvas" width="800" height="600"></canvas>
+                </div>
+                
+                <div class="controls">
+                    <button id="start-btn" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                        </svg>
+                        Start Simulation
+                    </button>
+                    <button id="pause-btn" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+                        </svg>
+                        Pause
+                    </button>
+                    <button id="reset-btn" disabled>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                        Reset
+                    </button>
+                </div>
+
+                <div id="status" class="status info">Please select a configuration to begin.</div>
+            </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/pyodide@0.24.1/build/pyodide.js"></script>
+    <footer class="footer">
+        <p>&copy; 2024 Formula1Won. Created by <a href="https://github.com/shreyas463/Formula1Won" target="_blank">Shreyas</a></p>
+    </footer>
+
     <script src="simulation.js"></script>
 </body>
 </html> 

@@ -1,165 +1,474 @@
-let pyodide = null;
-let simulation = null;
-let isRunning = false;
+// Global variables
 let selectedConfig = null;
+let isRunning = false;
+let isPaused = false;
+let simulationInterval = null;
+let canvas, ctx;
+let agent = { x: 0, y: 0 };
+let goal = { x: 0, y: 0 };
+let otherCars = [];
+let path = [];
+let step = 0;
+let maxSteps = 50;
+let carImages = {};
 
-// Initialize Pyodide
-async function initPyodide() {
-    pyodide = await loadPyodide();
-    await pyodide.loadPackage(['numpy', 'pygame']);
-    console.log('Pyodide loaded successfully');
-}
+// Configuration data
+const configs = {
+    1: {
+        title: "Basic scenario with 17 cars",
+        agentStart: { x: 3, y: 0 },
+        goalPos: { x: 2, y: 26 },
+        cars: [
+            { x: 2, y: 5, color: 'red' },
+            { x: 3, y: 10, color: 'blue' },
+            { x: 1, y: 15, color: 'green' },
+            { x: 2, y: 20, color: 'black' }
+        ]
+    },
+    2: {
+        title: "Different car arrangement",
+        agentStart: { x: 1, y: 0 },
+        goalPos: { x: 3, y: 26 },
+        cars: [
+            { x: 1, y: 8, color: 'red' },
+            { x: 2, y: 12, color: 'blue' },
+            { x: 3, y: 18, color: 'green' },
+            { x: 2, y: 22, color: 'black' }
+        ]
+    },
+    3: {
+        title: "Alternative starting position",
+        agentStart: { x: 2, y: 0 },
+        goalPos: { x: 1, y: 26 },
+        cars: [
+            { x: 1, y: 6, color: 'red' },
+            { x: 3, y: 14, color: 'blue' },
+            { x: 2, y: 19, color: 'green' },
+            { x: 1, y: 23, color: 'black' }
+        ]
+    },
+    4: {
+        title: "Another variation",
+        agentStart: { x: 3, y: 0 },
+        goalPos: { x: 3, y: 26 },
+        cars: [
+            { x: 2, y: 7, color: 'red' },
+            { x: 1, y: 13, color: 'blue' },
+            { x: 3, y: 17, color: 'green' },
+            { x: 2, y: 24, color: 'black' }
+        ]
+    },
+    5: {
+        title: "Complex scenario",
+        agentStart: { x: 1, y: 0 },
+        goalPos: { x: 2, y: 26 },
+        cars: [
+            { x: 1, y: 4, color: 'red' },
+            { x: 2, y: 9, color: 'blue' },
+            { x: 3, y: 16, color: 'green' },
+            { x: 1, y: 21, color: 'black' },
+            { x: 2, y: 25, color: 'red' }
+        ]
+    }
+};
 
-// Initialize the UI
-function initUI() {
+// Initialize the UI when the page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Get canvas and context
+    canvas = document.getElementById('simulation-canvas');
+    ctx = canvas.getContext('2d');
+    
+    // Load car images
+    loadCarImages();
+    
+    // Set up event listeners for config cards
     const configCards = document.querySelectorAll('.config-card');
-    const startBtn = document.getElementById('start-btn');
-    const pauseBtn = document.getElementById('pause-btn');
-    const resetBtn = document.getElementById('reset-btn');
-
     configCards.forEach(card => {
-        card.addEventListener('click', () => {
+        card.addEventListener('click', function() {
+            // Remove selected class from all cards
             configCards.forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            selectedConfig = card.dataset.config;
-            startBtn.disabled = false;
+            
+            // Add selected class to clicked card
+            this.classList.add('selected');
+            
+            // Store selected config
+            selectedConfig = this.getAttribute('data-config');
+            
+            // Enable start button
+            document.getElementById('start-btn').disabled = false;
+            
+            // Show status message
+            updateStatus(`Configuration ${selectedConfig} selected. Click Start to begin simulation.`, 'info');
         });
     });
+    
+    // Set up event listeners for buttons
+    document.getElementById('start-btn').addEventListener('click', startSimulation);
+    document.getElementById('pause-btn').addEventListener('click', togglePause);
+    document.getElementById('reset-btn').addEventListener('click', resetSimulation);
+    
+    // Initial status message
+    updateStatus('Please select a configuration to begin.', 'info');
+});
 
-    startBtn.addEventListener('click', startSimulation);
-    pauseBtn.addEventListener('click', togglePause);
-    resetBtn.addEventListener('click', resetSimulation);
+// Load car images
+function loadCarImages() {
+    const colors = ['white', 'red', 'blue', 'green', 'black'];
+    
+    colors.forEach(color => {
+        const img = new Image();
+        img.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="${color === 'white' ? '%23ffffff' : color === 'black' ? '%23000000' : color === 'red' ? '%23ef4444' : color === 'blue' ? '%232563eb' : '%2310b981'}" stroke="%23000000" stroke-width="0.5" d="M7,14v-1c0-0.55,0.45-1,1-1h8c0.55,0,1,0.45,1,1v1c0,0.55-0.45,1-1,1H8C7.45,15,7,14.55,7,14z M5,11l1.5-4.5C6.82,5.59,7.71,5,8.73,5h6.54c1.02,0,1.91,0.59,2.23,1.5L19,11H5z M19,13c-0.55,0-1-0.45-1-1s0.45-1,1-1s1,0.45,1,1S19.55,13,19,13z M5,13c-0.55,0-1-0.45-1-1s0.45-1,1-1s1,0.45,1,1S5.55,13,5,13z M8,18H5v-1c0-0.55,0.45-1,1-1h2V18z M19,18h-3v-2h2c0.55,0,1,0.45,1,1V18z"/></svg>`;
+        carImages[color] = img;
+    });
+    
+    // Add a flag image for the goal
+    const flagImg = new Image();
+    flagImg.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="%2310b981" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/></svg>`;
+    carImages['flag'] = flagImg;
 }
 
 // Start the simulation
-async function startSimulation() {
-    if (!selectedConfig) return;
-
-    const configFile = `dynamic_config${selectedConfig}.txt`;
-    const canvas = document.getElementById('simulation-canvas');
-    const ctx = canvas.getContext('2d');
-
-    try {
-        // Load the Python files
-        await pyodide.runPythonAsync(`
-            import sys
-            sys.path.append('.')
-            from SearchAgent import SearchAgent
-            from environment import Environment
-            from simulator import Simulator
-        `);
-
-        // Initialize the environment and agent
-        await pyodide.runPythonAsync(`
-            env = Environment(config_file='${configFile}')
-            agent = env.create_agent(SearchAgent)
-            env.set_primary_agent(agent)
-            sim = Simulator(env, display=False)
-        `);
-
-        isRunning = true;
-        document.getElementById('start-btn').disabled = true;
-        document.getElementById('pause-btn').disabled = false;
-        document.getElementById('reset-btn').disabled = false;
-
-        // Start the simulation loop
-        simulationLoop();
-    } catch (error) {
-        console.error('Error starting simulation:', error);
-        updateStatus('Error starting simulation', 'error');
+function startSimulation() {
+    if (!selectedConfig) {
+        updateStatus('Please select a configuration first.', 'error');
+        return;
     }
+    
+    // Reset any previous simulation
+    resetSimulationState();
+    
+    // Load the selected configuration
+    const config = configs[selectedConfig];
+    
+    // Set up initial state
+    agent = { ...config.agentStart };
+    goal = { ...config.goalPos };
+    otherCars = [...config.cars];
+    path = [{ ...agent }];
+    
+    // Update UI
+    document.getElementById('start-btn').disabled = true;
+    document.getElementById('pause-btn').disabled = false;
+    document.getElementById('reset-btn').disabled = false;
+    
+    // Start simulation loop
+    isRunning = true;
+    isPaused = false;
+    step = 0;
+    
+    // Clear any existing interval
+    if (simulationInterval) {
+        clearInterval(simulationInterval);
+    }
+    
+    // Set up new interval
+    simulationInterval = setInterval(simulationStep, 500);
+    
+    // Show status
+    updateStatus(`Running simulation with configuration ${selectedConfig}...`, 'info');
+    
+    // Draw initial state
+    drawSimulation();
 }
 
-// Simulation loop
-async function simulationLoop() {
-    if (!isRunning) return;
-
-    try {
-        const result = await pyodide.runPythonAsync(`
-            if not sim.env.done and sim.env.t < 100:
-                sim.env.step()
-                # Get the current state for visualization
-                {
-                    'agent_pos': sim.env.primary_agent.state['location'],
-                    'other_cars': [(a.state['location'], a.color) for a in sim.env.agent_states.keys() if a != sim.env.primary_agent],
-                    'done': sim.env.done,
-                    'success': sim.env.success
-                }
-            else:
-                None
-        `);
-
-        if (result) {
-            // Update visualization
-            updateVisualization(result);
-            
-            // Check if simulation is complete
-            if (result.done) {
-                isRunning = false;
-                updateStatus(result.success ? 'Simulation completed successfully!' : 'Simulation aborted', 
-                           result.success ? 'success' : 'error');
-                return;
-            }
-        }
-
-        // Continue the loop
-        setTimeout(simulationLoop, 1000);
-    } catch (error) {
-        console.error('Error in simulation loop:', error);
-        updateStatus('Error during simulation', 'error');
+// Simulation step
+function simulationStep() {
+    if (!isRunning || isPaused) return;
+    
+    // Increment step counter
+    step++;
+    
+    // Move agent toward goal
+    moveAgent();
+    
+    // Move other cars
+    moveOtherCars();
+    
+    // Check for collisions
+    if (checkCollisions()) {
         isRunning = false;
+        updateStatus('Simulation aborted: Collision detected!', 'error');
+        clearInterval(simulationInterval);
+        return;
     }
+    
+    // Check if goal reached
+    if (agent.x === goal.x && agent.y === goal.y) {
+        isRunning = false;
+        updateStatus('Simulation completed successfully!', 'success');
+        clearInterval(simulationInterval);
+        return;
+    }
+    
+    // Check if max steps reached
+    if (step >= maxSteps) {
+        isRunning = false;
+        updateStatus('Maximum steps reached without reaching goal.', 'error');
+        clearInterval(simulationInterval);
+        return;
+    }
+    
+    // Draw updated state
+    drawSimulation();
 }
 
-// Update the visualization
-function updateVisualization(state) {
-    const canvas = document.getElementById('simulation-canvas');
-    const ctx = canvas.getContext('2d');
-    const blockSize = 25;
+// Move agent toward goal
+function moveAgent() {
+    // Simple path finding - move toward goal
+    let newX = agent.x;
+    let newY = agent.y;
+    
+    // Decide whether to move horizontally or vertically
+    if (Math.abs(agent.x - goal.x) > Math.abs(agent.y - goal.y)) {
+        // Move horizontally
+        newX += agent.x < goal.x ? 1 : -1;
+    } else {
+        // Move vertically
+        newY += agent.y < goal.y ? 1 : -1;
+    }
+    
+    // Check for collisions with other cars at new position
+    const collision = otherCars.some(car => car.x === newX && car.y === newY);
+    
+    if (collision) {
+        // Try to avoid by moving in a different direction
+        newX = agent.x;
+        newY = agent.y;
+        
+        if (Math.abs(agent.x - goal.x) <= Math.abs(agent.y - goal.y)) {
+            // Try horizontal instead
+            newX += agent.x < goal.x ? 1 : -1;
+        } else {
+            // Try vertical instead
+            newY += agent.y < goal.y ? 1 : -1;
+        }
+        
+        // Check again for collision
+        const stillCollision = otherCars.some(car => car.x === newX && car.y === newY);
+        
+        if (stillCollision) {
+            // Stay in place if still collision
+            newX = agent.x;
+            newY = agent.y;
+        }
+    }
+    
+    // Update agent position
+    agent.x = newX;
+    agent.y = newY;
+    
+    // Add to path
+    path.push({ x: agent.x, y: agent.y });
+}
 
+// Move other cars randomly
+function moveOtherCars() {
+    otherCars.forEach(car => {
+        // Random movement for other cars
+        const direction = Math.floor(Math.random() * 4);
+        
+        switch(direction) {
+            case 0: // up
+                if (car.y > 0) car.y--;
+                break;
+            case 1: // right
+                if (car.x < 29) car.x++;
+                break;
+            case 2: // down
+                if (car.y < 29) car.y++;
+                break;
+            case 3: // left
+                if (car.x > 0) car.x--;
+                break;
+        }
+    });
+}
+
+// Check for collisions
+function checkCollisions() {
+    return otherCars.some(car => car.x === agent.x && car.y === agent.y);
+}
+
+// Draw the simulation
+function drawSimulation() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+    
+    // Set canvas dimensions
+    const gridSize = 30;
+    const cellSize = 20;
+    canvas.width = gridSize * cellSize;
+    canvas.height = gridSize * cellSize;
+    
     // Draw grid
-    ctx.strokeStyle = '#ddd';
-    for (let i = 0; i < canvas.width; i += blockSize) {
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    
+    for (let i = 0; i <= gridSize; i++) {
+        // Vertical lines
         ctx.beginPath();
-        ctx.moveTo(i, 0);
-        ctx.lineTo(i, canvas.height);
+        ctx.moveTo(i * cellSize, 0);
+        ctx.lineTo(i * cellSize, canvas.height);
+        ctx.stroke();
+        
+        // Horizontal lines
+        ctx.beginPath();
+        ctx.moveTo(0, i * cellSize);
+        ctx.lineTo(canvas.width, i * cellSize);
         ctx.stroke();
     }
-    for (let i = 0; i < canvas.height; i += blockSize) {
+    
+    // Draw road
+    drawRoad(cellSize);
+    
+    // Draw path
+    if (path.length > 1) {
+        ctx.strokeStyle = 'rgba(37, 99, 235, 0.3)';
+        ctx.lineWidth = 4;
         ctx.beginPath();
-        ctx.moveTo(0, i);
-        ctx.lineTo(canvas.width, i);
+        ctx.moveTo(path[0].x * cellSize + cellSize/2, path[0].y * cellSize + cellSize/2);
+        
+        for (let i = 1; i < path.length; i++) {
+            ctx.lineTo(path[i].x * cellSize + cellSize/2, path[i].y * cellSize + cellSize/2);
+        }
+        
         ctx.stroke();
     }
-
+    
+    // Draw goal
+    ctx.drawImage(
+        carImages['flag'],
+        goal.x * cellSize,
+        goal.y * cellSize,
+        cellSize,
+        cellSize
+    );
+    
     // Draw other cars
-    state.other_cars.forEach(([pos, color]) => {
-        ctx.fillStyle = color;
-        ctx.fillRect(pos[0] * blockSize, pos[1] * blockSize, blockSize - 2, blockSize - 2);
+    otherCars.forEach(car => {
+        ctx.drawImage(
+            carImages[car.color],
+            car.x * cellSize,
+            car.y * cellSize,
+            cellSize,
+            cellSize
+        );
     });
-
-    // Draw primary agent
-    ctx.fillStyle = 'white';
-    ctx.fillRect(state.agent_pos[0] * blockSize, state.agent_pos[1] * blockSize, blockSize - 2, blockSize - 2);
+    
+    // Draw agent
+    ctx.drawImage(
+        carImages['white'],
+        agent.x * cellSize,
+        agent.y * cellSize,
+        cellSize,
+        cellSize
+    );
+    
+    // Draw step counter and info
+    drawInfoPanel(cellSize);
 }
 
-// Toggle pause
+// Draw road
+function drawRoad(cellSize) {
+    // Draw lanes
+    ctx.fillStyle = '#f1f5f9';
+    
+    // Horizontal lanes
+    for (let y = 0; y < 30; y += 3) {
+        ctx.fillRect(0, y * cellSize, 30 * cellSize, cellSize * 2);
+    }
+    
+    // Vertical lanes
+    for (let x = 0; x < 30; x += 3) {
+        ctx.fillRect(x * cellSize, 0, cellSize * 2, 30 * cellSize);
+    }
+    
+    // Draw lane markers
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([cellSize / 4, cellSize / 4]);
+    
+    // Horizontal lane markers
+    for (let y = 1; y < 30; y += 3) {
+        ctx.beginPath();
+        ctx.moveTo(0, y * cellSize + cellSize / 2);
+        ctx.lineTo(30 * cellSize, y * cellSize + cellSize / 2);
+        ctx.stroke();
+    }
+    
+    // Vertical lane markers
+    for (let x = 1; x < 30; x += 3) {
+        ctx.beginPath();
+        ctx.moveTo(x * cellSize + cellSize / 2, 0);
+        ctx.lineTo(x * cellSize + cellSize / 2, 30 * cellSize);
+        ctx.stroke();
+    }
+    
+    ctx.setLineDash([]);
+}
+
+// Draw info panel
+function drawInfoPanel(cellSize) {
+    // Draw semi-transparent background
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillRect(10, 10, 200, 60);
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(10, 10, 200, 60);
+    
+    // Draw step counter
+    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 14px Montserrat';
+    ctx.fillText(`Step: ${step}/${maxSteps}`, 20, 30);
+    
+    // Draw agent position
+    ctx.font = '12px Montserrat';
+    ctx.fillText(`Agent: (${agent.x}, ${agent.y})`, 20, 50);
+    
+    // Draw goal position
+    ctx.fillText(`Goal: (${goal.x}, ${goal.y})`, 120, 50);
+}
+
+// Toggle pause/resume
 function togglePause() {
-    isRunning = !isRunning;
-    document.getElementById('pause-btn').textContent = isRunning ? 'Pause' : 'Resume';
+    isPaused = !isPaused;
+    document.getElementById('pause-btn').textContent = isPaused ? 'Resume' : 'Pause';
+    
+    if (isPaused) {
+        updateStatus('Simulation paused. Click Resume to continue.', 'info');
+    } else {
+        updateStatus('Simulation resumed.', 'info');
+    }
 }
 
 // Reset simulation
 function resetSimulation() {
-    isRunning = false;
+    resetSimulationState();
+    
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Reset UI
     document.getElementById('start-btn').disabled = false;
     document.getElementById('pause-btn').disabled = true;
     document.getElementById('reset-btn').disabled = true;
-    document.getElementById('status').textContent = '';
-    updateVisualization(null);
+    document.getElementById('pause-btn').textContent = 'Pause';
+    
+    // Show status
+    updateStatus('Simulation reset. Select a configuration to begin.', 'info');
+}
+
+// Reset simulation state
+function resetSimulationState() {
+    isRunning = false;
+    isPaused = false;
+    step = 0;
+    path = [];
+    
+    // Clear interval
+    if (simulationInterval) {
+        clearInterval(simulationInterval);
+        simulationInterval = null;
+    }
 }
 
 // Update status message
@@ -167,10 +476,4 @@ function updateStatus(message, type) {
     const status = document.getElementById('status');
     status.textContent = message;
     status.className = `status ${type}`;
-}
-
-// Initialize everything when the page loads
-window.addEventListener('load', async () => {
-    await initPyodide();
-    initUI();
-}); 
+} 
