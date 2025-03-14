@@ -10,6 +10,7 @@ let otherCars = [];
 let path = [];
 let step = 0;
 let maxSteps = 50;
+let carImages = {};
 
 // Configuration data
 const configs = {
@@ -77,6 +78,9 @@ document.addEventListener('DOMContentLoaded', function() {
     canvas = document.getElementById('simulation-canvas');
     ctx = canvas.getContext('2d');
     
+    // Load car images
+    loadCarImages();
+    
     // Set up event listeners for config cards
     const configCards = document.querySelectorAll('.config-card');
     configCards.forEach(card => {
@@ -106,6 +110,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial status message
     updateStatus('Please select a configuration to begin.', 'info');
 });
+
+// Load car images
+function loadCarImages() {
+    const colors = ['white', 'red', 'blue', 'green', 'black'];
+    
+    colors.forEach(color => {
+        const img = new Image();
+        img.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="${color === 'white' ? '%23ffffff' : color === 'black' ? '%23000000' : color === 'red' ? '%23ef4444' : color === 'blue' ? '%232563eb' : '%2310b981'}" stroke="%23000000" stroke-width="0.5" d="M7,14v-1c0-0.55,0.45-1,1-1h8c0.55,0,1,0.45,1,1v1c0,0.55-0.45,1-1,1H8C7.45,15,7,14.55,7,14z M5,11l1.5-4.5C6.82,5.59,7.71,5,8.73,5h6.54c1.02,0,1.91,0.59,2.23,1.5L19,11H5z M19,13c-0.55,0-1-0.45-1-1s0.45-1,1-1s1,0.45,1,1S19.55,13,19,13z M5,13c-0.55,0-1-0.45-1-1s0.45-1,1-1s1,0.45,1,1S5.55,13,5,13z M8,18H5v-1c0-0.55,0.45-1,1-1h2V18z M19,18h-3v-2h2c0.55,0,1,0.45,1,1V18z"/></svg>`;
+        carImages[color] = img;
+    });
+    
+    // Add a flag image for the goal
+    const flagImg = new Image();
+    flagImg.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="%2310b981" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/></svg>`;
+    carImages['flag'] = flagImg;
+}
 
 // Start the simulation
 function startSimulation() {
@@ -281,7 +301,7 @@ function drawSimulation() {
     canvas.height = gridSize * cellSize;
     
     // Draw grid
-    ctx.strokeStyle = '#ddd';
+    ctx.strokeStyle = '#e2e8f0';
     ctx.lineWidth = 1;
     
     for (let i = 0; i <= gridSize; i++) {
@@ -298,14 +318,13 @@ function drawSimulation() {
         ctx.stroke();
     }
     
-    // Draw goal
-    ctx.fillStyle = '#4CAF50';
-    ctx.fillRect(goal.x * cellSize, goal.y * cellSize, cellSize - 2, cellSize - 2);
+    // Draw road
+    drawRoad(cellSize);
     
     // Draw path
     if (path.length > 1) {
-        ctx.strokeStyle = 'rgba(0, 123, 255, 0.5)';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = 'rgba(37, 99, 235, 0.3)';
+        ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.moveTo(path[0].x * cellSize + cellSize/2, path[0].y * cellSize + cellSize/2);
         
@@ -316,23 +335,97 @@ function drawSimulation() {
         ctx.stroke();
     }
     
+    // Draw goal
+    ctx.drawImage(
+        carImages['flag'],
+        goal.x * cellSize,
+        goal.y * cellSize,
+        cellSize,
+        cellSize
+    );
+    
     // Draw other cars
     otherCars.forEach(car => {
-        ctx.fillStyle = car.color;
-        ctx.fillRect(car.x * cellSize, car.y * cellSize, cellSize - 2, cellSize - 2);
+        ctx.drawImage(
+            carImages[car.color],
+            car.x * cellSize,
+            car.y * cellSize,
+            cellSize,
+            cellSize
+        );
     });
     
     // Draw agent
-    ctx.fillStyle = 'white';
-    ctx.strokeStyle = 'black';
-    ctx.lineWidth = 2;
-    ctx.fillRect(agent.x * cellSize, agent.y * cellSize, cellSize - 2, cellSize - 2);
-    ctx.strokeRect(agent.x * cellSize, agent.y * cellSize, cellSize - 2, cellSize - 2);
+    ctx.drawImage(
+        carImages['white'],
+        agent.x * cellSize,
+        agent.y * cellSize,
+        cellSize,
+        cellSize
+    );
+    
+    // Draw step counter and info
+    drawInfoPanel(cellSize);
+}
+
+// Draw road
+function drawRoad(cellSize) {
+    // Draw lanes
+    ctx.fillStyle = '#f1f5f9';
+    
+    // Horizontal lanes
+    for (let y = 0; y < 30; y += 3) {
+        ctx.fillRect(0, y * cellSize, 30 * cellSize, cellSize * 2);
+    }
+    
+    // Vertical lanes
+    for (let x = 0; x < 30; x += 3) {
+        ctx.fillRect(x * cellSize, 0, cellSize * 2, 30 * cellSize);
+    }
+    
+    // Draw lane markers
+    ctx.strokeStyle = '#94a3b8';
+    ctx.setLineDash([cellSize / 4, cellSize / 4]);
+    
+    // Horizontal lane markers
+    for (let y = 1; y < 30; y += 3) {
+        ctx.beginPath();
+        ctx.moveTo(0, y * cellSize + cellSize / 2);
+        ctx.lineTo(30 * cellSize, y * cellSize + cellSize / 2);
+        ctx.stroke();
+    }
+    
+    // Vertical lane markers
+    for (let x = 1; x < 30; x += 3) {
+        ctx.beginPath();
+        ctx.moveTo(x * cellSize + cellSize / 2, 0);
+        ctx.lineTo(x * cellSize + cellSize / 2, 30 * cellSize);
+        ctx.stroke();
+    }
+    
+    ctx.setLineDash([]);
+}
+
+// Draw info panel
+function drawInfoPanel(cellSize) {
+    // Draw semi-transparent background
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillRect(10, 10, 200, 60);
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(10, 10, 200, 60);
     
     // Draw step counter
-    ctx.fillStyle = 'black';
-    ctx.font = '14px Arial';
-    ctx.fillText(`Step: ${step}/${maxSteps}`, 10, 20);
+    ctx.fillStyle = '#1e293b';
+    ctx.font = 'bold 14px Montserrat';
+    ctx.fillText(`Step: ${step}/${maxSteps}`, 20, 30);
+    
+    // Draw agent position
+    ctx.font = '12px Montserrat';
+    ctx.fillText(`Agent: (${agent.x}, ${agent.y})`, 20, 50);
+    
+    // Draw goal position
+    ctx.fillText(`Goal: (${goal.x}, ${goal.y})`, 120, 50);
 }
 
 // Toggle pause/resume
