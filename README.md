@@ -2,11 +2,10 @@
 
 A beautiful, interactive simulation of a self-driving car navigating through traffic.
 
-![Formula1Won Simulation](https://i.imgur.com/placeholder.png)
 
 ## 🚀 Live Demo
 
-Check out the live simulation: [Formula1Won Demo](https://admirable-bubblegum-5c4ee6.netlify.app/)
+Check out the live simulation: [Formula1Won Demo]((https://formula1won.netlify.app/))
 
 ## 🎮 How to Use
 
@@ -48,9 +47,6 @@ Check out the live simulation: [Formula1Won Demo](https://admirable-bubblegum-5c
 - JavaScript for simulation logic
 - CSS for styling
 
-## 📝 License
-
-MIT License
 
 ## 👨‍💻 Created By
 
