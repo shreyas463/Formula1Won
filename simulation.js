@@ -369,10 +369,10 @@ function drawSimulation() {
     ctx.shadowBlur = 10;
     ctx.drawImage(
         carImages['flag'],
-        goal.x * cellSize + cellSize/4,
-        goal.y * cellSize + cellSize/4,
-        cellSize/2,
-        cellSize/2
+        goal.x * cellSize + cellSize/6,
+        goal.y * cellSize + cellSize/6,
+        cellSize*2/3,
+        cellSize*2/3
     );
     
     // Reset shadow
@@ -383,10 +383,10 @@ function drawSimulation() {
     otherCars.forEach(car => {
         ctx.drawImage(
             carImages[car.color],
-            car.x * cellSize + cellSize/4,
-            car.y * cellSize + cellSize/4,
-            cellSize/2,
-            cellSize/2
+            car.x * cellSize + cellSize/6,
+            car.y * cellSize + cellSize/6,
+            cellSize*2/3,
+            cellSize*2/3
         );
     });
     
@@ -395,10 +395,10 @@ function drawSimulation() {
     ctx.shadowBlur = 10;
     ctx.drawImage(
         carImages['white'],
-        agent.x * cellSize + cellSize/4,
-        agent.y * cellSize + cellSize/4,
-        cellSize/2,
-        cellSize/2
+        agent.x * cellSize + cellSize/6,
+        agent.y * cellSize + cellSize/6,
+        cellSize*2/3,
+        cellSize*2/3
     );
     
     // Reset shadow
