@@ -13,7 +13,7 @@
             --primary-dark: #1d4ed8;
             --secondary-color: #f59e0b;
             --dark-color: #1e293b;
-            --light-color: #f8fafc;
+            --light-color: #136fcb;
             --success-color: #10b981;
             --error-color: #ef4444;
             --info-color: #0ea5e9;
@@ -191,10 +191,11 @@
             padding: 1.5rem;
             box-shadow: var(--shadow-lg);
             margin: 1.5rem auto;
-            max-width: 800px;
+            max-width: 900px;
             position: relative;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.5);
+            overflow: hidden;
         }
         
         #simulation-canvas {
@@ -204,6 +205,7 @@
             background-color: rgba(248, 250, 252, 0.9);
             max-width: 100%;
             height: auto;
+            display: block;
         }
         
         .controls {

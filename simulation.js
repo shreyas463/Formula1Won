@@ -294,9 +294,9 @@ function drawSimulation() {
     // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    // Set canvas dimensions
+    // Set canvas dimensions - increase cell size for larger simulation area
     const gridSize = 30;
-    const cellSize = 20;
+    const cellSize = 25; // Increased from 20 to 25
     canvas.width = gridSize * cellSize;
     canvas.height = gridSize * cellSize;
     
@@ -369,10 +369,10 @@ function drawSimulation() {
     ctx.shadowBlur = 10;
     ctx.drawImage(
         carImages['flag'],
-        goal.x * cellSize,
-        goal.y * cellSize,
-        cellSize,
-        cellSize
+        goal.x * cellSize + cellSize/4,
+        goal.y * cellSize + cellSize/4,
+        cellSize/2,
+        cellSize/2
     );
     
     // Reset shadow
@@ -383,10 +383,10 @@ function drawSimulation() {
     otherCars.forEach(car => {
         ctx.drawImage(
             carImages[car.color],
-            car.x * cellSize,
-            car.y * cellSize,
-            cellSize,
-            cellSize
+            car.x * cellSize + cellSize/4,
+            car.y * cellSize + cellSize/4,
+            cellSize/2,
+            cellSize/2
         );
     });
     
@@ -395,10 +395,10 @@ function drawSimulation() {
     ctx.shadowBlur = 10;
     ctx.drawImage(
         carImages['white'],
-        agent.x * cellSize,
-        agent.y * cellSize,
-        cellSize,
-        cellSize
+        agent.x * cellSize + cellSize/4,
+        agent.y * cellSize + cellSize/4,
+        cellSize/2,
+        cellSize/2
     );
     
     // Reset shadow
