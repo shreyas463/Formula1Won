@@ -1,26 +1,6 @@
-let pyodide = null;
 let simulation = null;
 let isRunning = false;
 let selectedConfig = null;
-let isPyodideLoaded = false;
-
-// Initialize Pyodide
-async function initPyodide() {
-    try {
-        updateStatus("Loading Pyodide environment...", "info");
-        console.log("Loading Pyodide...");
-        pyodide = await loadPyodide();
-        console.log("Loading packages...");
-        updateStatus("Loading required packages...", "info");
-        await pyodide.loadPackage(['numpy']);
-        console.log("Pyodide loaded successfully");
-        isPyodideLoaded = true;
-        updateStatus("Ready! Please select a configuration.", "success");
-    } catch (error) {
-        console.error("Error initializing Pyodide:", error);
-        updateStatus("Failed to load Pyodide: " + error.message, "error");
-    }
-}
 
 // Initialize the UI
 function initUI() {
@@ -31,11 +11,6 @@ function initUI() {
 
     configCards.forEach(card => {
         card.addEventListener('click', () => {
-            if (!isPyodideLoaded) {
-                updateStatus("Still loading Pyodide. Please wait...", "error");
-                return;
-            }
-            
             configCards.forEach(c => c.classList.remove('selected'));
             card.classList.add('selected');
             selectedConfig = card.dataset.config;
@@ -47,20 +22,21 @@ function initUI() {
     startBtn.addEventListener('click', startSimulation);
     pauseBtn.addEventListener('click', togglePause);
     resetBtn.addEventListener('click', resetSimulation);
+    
+    updateStatus("Ready! Please select a configuration.", "info");
 }
 
 // Start the simulation
-async function startSimulation() {
+function startSimulation() {
     if (!selectedConfig) {
         updateStatus("Please select a configuration first", "error");
         return;
     }
 
     updateStatus(`Starting simulation with configuration ${selectedConfig}...`, "info");
-    const configFile = `dynamic_config${selectedConfig}.txt`;
     
     try {
-        // Create a simple demo environment since we can't load the Python files
+        // Create a simple demo environment
         createDemoEnvironment(selectedConfig);
         
         isRunning = true;
@@ -400,8 +376,7 @@ function updateStatus(message, type) {
 }
 
 // Initialize everything when the page loads
-window.addEventListener('load', async () => {
+window.addEventListener('load', () => {
     updateStatus("Initializing simulation...", "info");
     initUI();
-    await initPyodide();
 }); 
