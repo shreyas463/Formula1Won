@@ -4,13 +4,16 @@ let isRunning = false;
 let isPaused = false;
 let simulationInterval = null;
 let canvas, ctx;
-let agent = { x: 0, y: 0 };
-let goal = { x: 0, y: 0 };
+let agent = null;
+let goal = null;
 let otherCars = [];
 let path = [];
 let step = 0;
 let maxSteps = 50;
 let carImages = {};
+let gridSize = 30;
+let cellSize = 30;
+let animationFrameId = null;
 
 // Configuration data
 const configs = {
@@ -106,6 +109,28 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('start-btn').addEventListener('click', startSimulation);
     document.getElementById('pause-btn').addEventListener('click', togglePause);
     document.getElementById('reset-btn').addEventListener('click', resetSimulation);
+    
+    // Initialize guide toggle functionality
+    const toggleGuideBtn = document.getElementById('toggle-guide');
+    const guideContent = document.getElementById('guide-content');
+    
+    if (toggleGuideBtn && guideContent) {
+        toggleGuideBtn.addEventListener('click', function() {
+            guideContent.classList.toggle('collapsed');
+            toggleGuideBtn.classList.toggle('collapsed');
+            
+            // Store preference in localStorage
+            const isCollapsed = guideContent.classList.contains('collapsed');
+            localStorage.setItem('guideCollapsed', isCollapsed);
+        });
+        
+        // Check if guide was previously collapsed
+        const wasCollapsed = localStorage.getItem('guideCollapsed') === 'true';
+        if (wasCollapsed) {
+            guideContent.classList.add('collapsed');
+            toggleGuideBtn.classList.add('collapsed');
+        }
+    }
     
     // Initial status message
     updateStatus('Please select a configuration to begin.', 'info');

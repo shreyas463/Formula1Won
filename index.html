@@ -350,6 +350,114 @@
                 padding: 1.5rem;
             }
         }
+        
+        /* User Guide Styles */
+        .guide-card {
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(239, 246, 255, 0.9));
+            border-left: 4px solid var(--info-color);
+        }
+        
+        .guide-card .card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--info-color);
+            position: relative;
+        }
+        
+        .guide-icon {
+            color: var(--info-color);
+        }
+        
+        .toggle-guide {
+            position: absolute;
+            right: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--info-color);
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-guide.collapsed .chevron-down {
+            transform: rotate(180deg);
+        }
+        
+        .guide-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-height: 1000px;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        
+        .guide-content.collapsed {
+            max-height: 0;
+        }
+        
+        .guide-step {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        
+        .step-number {
+            background-color: var(--info-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            flex-shrink: 0;
+            box-shadow: 0 2px 5px rgba(14, 165, 233, 0.3);
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark-color);
+        }
+        
+        .step-content p {
+            color: #475569;
+            font-size: 0.95rem;
+        }
+        
+        .guide-note {
+            background-color: rgba(224, 242, 254, 0.5);
+            border-radius: 8px;
+            padding: 1rem;
+            border-left: 3px solid var(--info-color);
+        }
+        
+        .guide-note p {
+            color: #0c4a6e;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        @media (max-width: 768px) {
+            .guide-step {
+                flex-direction: column;
+            }
+            
+            .step-number {
+                margin-bottom: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -359,6 +467,49 @@
     </header>
 
     <div class="container">
+        <!-- User Guide Box -->
+        <div class="card guide-card">
+            <h2 class="card-title" id="guide-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="guide-icon">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                </svg>
+                Quick Guide
+                <button class="toggle-guide" id="toggle-guide" aria-label="Toggle guide visibility">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron-down">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+            </h2>
+            <div class="guide-content" id="guide-content">
+                <div class="guide-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Select a Configuration</h3>
+                        <p>Choose one of the five traffic scenarios to test the self-driving car in different conditions.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Start the Simulation</h3>
+                        <p>Click the Start button to watch the white car (agent) navigate to its goal while avoiding other vehicles.</p>
+                    </div>
+                </div>
+                <div class="guide-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Watch and Control</h3>
+                        <p>Observe how the car finds its path. Use Pause to freeze the simulation or Reset to try again.</p>
+                    </div>
+                </div>
+                <div class="guide-note">
+                    <p><strong>What to expect:</strong> The white car will calculate the shortest path to the goal (flag) while dynamically avoiding other vehicles that move randomly. The blue line shows the car's path history.</p>
+                </div>
+            </div>
+        </div>
+
         <div class="card">
             <h2 class="card-title">Select Configuration</h2>
             
