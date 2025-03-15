@@ -25,7 +25,20 @@ const configs = {
             { x: 2, y: 5, color: 'red' },
             { x: 3, y: 10, color: 'blue' },
             { x: 1, y: 15, color: 'green' },
-            { x: 2, y: 20, color: 'black' }
+            { x: 2, y: 20, color: 'black' },
+            { x: 0, y: 8, color: 'red' },
+            { x: 1, y: 12, color: 'blue' },
+            { x: 3, y: 17, color: 'green' },
+            { x: 0, y: 22, color: 'black' },
+            { x: 2, y: 7, color: 'red' },
+            { x: 3, y: 13, color: 'blue' },
+            { x: 1, y: 18, color: 'green' },
+            { x: 2, y: 23, color: 'black' },
+            { x: 0, y: 6, color: 'red' },
+            { x: 1, y: 11, color: 'blue' },
+            { x: 3, y: 16, color: 'green' },
+            { x: 0, y: 21, color: 'black' },
+            { x: 2, y: 25, color: 'red' }
         ]
     },
     2: {

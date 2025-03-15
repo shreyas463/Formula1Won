@@ -420,7 +420,7 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
             overflow: hidden;
             transition: var(--transition);
-            height: calc(100vh - 15rem);
+            height: calc(100vh - 12rem);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -782,7 +782,8 @@
         
         @media (max-width: 768px) {
             .config-selector {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.4rem;
             }
             
             .header h1 {
@@ -834,7 +835,7 @@
             }
             
             .canvas-wrapper {
-                height: calc(100vh - 18rem);
+                height: calc(100vh - 14rem);
             }
         }
         
