@@ -190,7 +190,17 @@ function startSimulation() {
     resetSimulationState();
     
     // Load the selected configuration
-    const config = configs[selectedConfig];
+    let config;
+    let simulationSpeed = 200; // Default speed
+    let customSteps = null;
+    
+    if (selectedConfig === 'custom' && window.customConfig) {
+        config = window.customConfig;
+        simulationSpeed = window.customSimulationSpeed || 200;
+        customSteps = window.customMaxSteps;
+    } else {
+        config = configs[selectedConfig];
+    }
     
     // Set up initial state
     agent = { ...config.agentStart };
@@ -198,29 +208,33 @@ function startSimulation() {
     otherCars = [...config.cars];
     path = [{ ...agent }];
     
+    // Set max steps (use custom if provided)
+    if (customSteps) {
+        maxSteps = customSteps;
+    }
+    
     // Update UI
     document.getElementById('start-btn').disabled = true;
     document.getElementById('pause-btn').disabled = false;
     document.getElementById('reset-btn').disabled = false;
     
-    // Start simulation loop
+    // Show status message
+    updateStatus(`Running simulation for ${config.title}...`, 'success');
+    
+    // Start the simulation loop
     isRunning = true;
     isPaused = false;
-    step = 0;
     
     // Clear any existing interval
     if (simulationInterval) {
         clearInterval(simulationInterval);
     }
     
-    // Set up new interval
-    simulationInterval = setInterval(simulationStep, 500);
+    // Start the simulation with the appropriate speed
+    simulationInterval = setInterval(simulationStep, simulationSpeed);
     
-    // Show status
-    updateStatus(`Running simulation with configuration ${selectedConfig}...`, 'info');
-    
-    // Draw initial state
-    drawSimulation();
+    // Initial render
+    render();
 }
 
 // Simulation step

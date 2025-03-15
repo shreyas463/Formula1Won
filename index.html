@@ -104,15 +104,6 @@
             animation: headerPattern 60s linear infinite;
         }
         
-        @keyframes headerPattern {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(100px, 100px);
-            }
-        }
-        
         .header h1 {
             font-weight: 700;
             font-size: 2rem;
@@ -1022,6 +1013,233 @@
             transform: scale(1.5);
             filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
         }
+        
+        /* Custom Configuration Modal Styles */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background-color: white;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-xl);
+            z-index: 1000;
+            max-width: 90%;
+            width: 500px;
+            max-height: 90vh;
+            display: none;
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+        }
+        
+        .modal.active {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 999;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .modal-overlay.active {
+            display: block;
+            opacity: 1;
+        }
+        
+        .modal-header {
+            padding: 1.25rem;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+            color: white;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 0;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+            box-shadow: none;
+        }
+        
+        .close-modal:hover {
+            transform: scale(1.1);
+            box-shadow: none;
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            max-height: calc(90vh - 130px);
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            justify-content: flex-end;
+            background-color: var(--gray-100);
+        }
+        
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            font-size: 0.95rem;
+        }
+        
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .slider {
+            flex: 1;
+            height: 6px;
+            background: linear-gradient(to right, var(--gray-300), var(--primary-light));
+            outline: none;
+            border-radius: 3px;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        
+        .range-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary-color);
+            background-color: rgba(79, 70, 229, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: var(--border-radius-sm);
+        }
+        
+        .position-inputs {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .position-input {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .position-input label {
+            margin-bottom: 0;
+            min-width: 20px;
+        }
+        
+        .number-input {
+            width: 60px;
+            padding: 0.5rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--border-radius-sm);
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            transition: border-color 0.2s ease;
+        }
+        
+        .number-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+        
+        .color-distribution {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .color-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .color-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        
+        .apply-btn {
+            background: linear-gradient(to right, var(--primary-color), var(--primary-dark));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        
+        @media (max-width: 600px) {
+            .modal {
+                width: 95%;
+            }
+            
+            .color-distribution {
+                grid-template-columns: 1fr;
+            }
+            
+            .position-inputs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1178,6 +1396,23 @@
                                 Preview
                             </div>
                         </div>
+                        <div class="config-card" data-config="custom" id="custom-config">
+                            <div class="config-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                                </svg>
+                            </div>
+                            <h3>Custom</h3>
+                            <p>Create your own scenario</p>
+                            <div class="config-preview">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                </svg>
+                                Customize
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1246,6 +1481,106 @@
             <p>Created by <a href="https://github.com/shreyas463" target="_blank">Shreyas</a></p>
         </div>
     </footer>
+
+    <!-- Custom Configuration Modal -->
+    <div class="modal" id="custom-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Custom Configuration</h2>
+                <button class="close-modal" id="close-modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="num-cars">Number of Cars</label>
+                    <div class="range-container">
+                        <input type="range" id="num-cars" min="5" max="30" value="17" class="slider">
+                        <span class="range-value" id="num-cars-value">17</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="simulation-speed">Simulation Speed</label>
+                    <div class="range-container">
+                        <input type="range" id="simulation-speed" min="100" max="1000" step="100" value="500" class="slider">
+                        <span class="range-value" id="simulation-speed-value">500ms</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="max-steps">Maximum Steps</label>
+                    <div class="range-container">
+                        <input type="range" id="max-steps" min="30" max="100" value="50" class="slider">
+                        <span class="range-value" id="max-steps-value">50</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="agent-start-x">Agent Starting Position</label>
+                    <div class="position-inputs">
+                        <div class="position-input">
+                            <label for="agent-start-x">X:</label>
+                            <input type="number" id="agent-start-x" min="0" max="29" value="3" class="number-input">
+                        </div>
+                        <div class="position-input">
+                            <label for="agent-start-y">Y:</label>
+                            <input type="number" id="agent-start-y" min="0" max="29" value="0" class="number-input">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="goal-pos-x">Goal Position</label>
+                    <div class="position-inputs">
+                        <div class="position-input">
+                            <label for="goal-pos-x">X:</label>
+                            <input type="number" id="goal-pos-x" min="0" max="29" value="2" class="number-input">
+                        </div>
+                        <div class="position-input">
+                            <label for="goal-pos-y">Y:</label>
+                            <input type="number" id="goal-pos-y" min="0" max="29" value="26" class="number-input">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Car Colors Distribution</label>
+                    <div class="color-distribution">
+                        <div class="color-item">
+                            <span class="color-dot" style="background-color: #ef4444;"></span>
+                            <label for="red-cars">Red:</label>
+                            <input type="number" id="red-cars" min="1" max="10" value="4" class="number-input">
+                        </div>
+                        <div class="color-item">
+                            <span class="color-dot" style="background-color: #2563eb;"></span>
+                            <label for="blue-cars">Blue:</label>
+                            <input type="number" id="blue-cars" min="1" max="10" value="4" class="number-input">
+                        </div>
+                        <div class="color-item">
+                            <span class="color-dot" style="background-color: #10b981;"></span>
+                            <label for="green-cars">Green:</label>
+                            <input type="number" id="green-cars" min="1" max="10" value="4" class="number-input">
+                        </div>
+                        <div class="color-item">
+                            <span class="color-dot" style="background-color: #000000;"></span>
+                            <label for="black-cars">Black:</label>
+                            <input type="number" id="black-cars" min="1" max="10" value="5" class="number-input">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="apply-custom" class="apply-btn">Apply Configuration</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modal-overlay"></div>
 
     <script src="simulation.js"></script>
     
@@ -1339,6 +1674,156 @@
                     }, 300);
                 }
             });
+        });
+        
+        // Custom Configuration Modal
+        const customConfig = document.getElementById('custom-config');
+        const customModal = document.getElementById('custom-modal');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const closeModal = document.getElementById('close-modal');
+        const applyCustom = document.getElementById('apply-custom');
+        
+        // Open modal when custom config is clicked
+        customConfig.addEventListener('click', function() {
+            customModal.classList.add('active');
+            modalOverlay.classList.add('active');
+            
+            // Remove selected class from all cards
+            document.querySelectorAll('.config-card').forEach(c => c.classList.remove('selected'));
+            
+            // Add selected class to custom card
+            this.classList.add('selected');
+        });
+        
+        // Close modal when close button is clicked
+        closeModal.addEventListener('click', function() {
+            customModal.classList.remove('active');
+            modalOverlay.classList.remove('active');
+        });
+        
+        // Close modal when overlay is clicked
+        modalOverlay.addEventListener('click', function() {
+            customModal.classList.remove('active');
+            modalOverlay.classList.remove('active');
+        });
+        
+        // Update range value displays
+        const numCarsSlider = document.getElementById('num-cars');
+        const numCarsValue = document.getElementById('num-cars-value');
+        const speedSlider = document.getElementById('simulation-speed');
+        const speedValue = document.getElementById('simulation-speed-value');
+        const maxStepsSlider = document.getElementById('max-steps');
+        const maxStepsValue = document.getElementById('max-steps-value');
+        
+        numCarsSlider.addEventListener('input', function() {
+            numCarsValue.textContent = this.value;
+            
+            // Update color distribution inputs to match total cars
+            const totalCars = parseInt(this.value);
+            const redCars = document.getElementById('red-cars');
+            const blueCars = document.getElementById('blue-cars');
+            const greenCars = document.getElementById('green-cars');
+            const blackCars = document.getElementById('black-cars');
+            
+            // Calculate default distribution (roughly equal)
+            const perColor = Math.floor(totalCars / 4);
+            const remainder = totalCars % 4;
+            
+            redCars.value = perColor;
+            blueCars.value = perColor;
+            greenCars.value = perColor;
+            blackCars.value = perColor + remainder;
+        });
+        
+        speedSlider.addEventListener('input', function() {
+            speedValue.textContent = this.value + 'ms';
+        });
+        
+        maxStepsSlider.addEventListener('input', function() {
+            maxStepsValue.textContent = this.value;
+        });
+        
+        // Apply custom configuration
+        applyCustom.addEventListener('click', function() {
+            // Get values from form
+            const numCars = parseInt(numCarsSlider.value);
+            const simulationSpeed = parseInt(speedSlider.value);
+            const maxSteps = parseInt(maxStepsSlider.value);
+            const agentStartX = parseInt(document.getElementById('agent-start-x').value);
+            const agentStartY = parseInt(document.getElementById('agent-start-y').value);
+            const goalPosX = parseInt(document.getElementById('goal-pos-x').value);
+            const goalPosY = parseInt(document.getElementById('goal-pos-y').value);
+            const redCars = parseInt(document.getElementById('red-cars').value);
+            const blueCars = parseInt(document.getElementById('blue-cars').value);
+            const greenCars = parseInt(document.getElementById('green-cars').value);
+            const blackCars = parseInt(document.getElementById('black-cars').value);
+            
+            // Validate that color distribution matches total cars
+            const totalColorCars = redCars + blueCars + greenCars + blackCars;
+            if (totalColorCars !== numCars) {
+                alert(`The sum of cars by color (${totalColorCars}) must equal the total number of cars (${numCars}).`);
+                return;
+            }
+            
+            // Create custom configuration
+            const customCars = [];
+            
+            // Helper function to generate random positions
+            const generateRandomPosition = () => {
+                const x = Math.floor(Math.random() * 4); // 0-3 for lane positions
+                const y = Math.floor(Math.random() * 25) + 3; // 3-28 for vertical positions
+                
+                // Check if position is already taken
+                const positionTaken = customCars.some(car => car.x === x && car.y === y);
+                if (positionTaken) {
+                    return generateRandomPosition();
+                }
+                
+                return { x, y };
+            };
+            
+            // Generate cars with specified colors
+            for (let i = 0; i < redCars; i++) {
+                const pos = generateRandomPosition();
+                customCars.push({ x: pos.x, y: pos.y, color: 'red' });
+            }
+            
+            for (let i = 0; i < blueCars; i++) {
+                const pos = generateRandomPosition();
+                customCars.push({ x: pos.x, y: pos.y, color: 'blue' });
+            }
+            
+            for (let i = 0; i < greenCars; i++) {
+                const pos = generateRandomPosition();
+                customCars.push({ x: pos.x, y: pos.y, color: 'green' });
+            }
+            
+            for (let i = 0; i < blackCars; i++) {
+                const pos = generateRandomPosition();
+                customCars.push({ x: pos.x, y: pos.y, color: 'black' });
+            }
+            
+            // Create custom config object
+            window.customConfig = {
+                title: "Custom scenario",
+                agentStart: { x: agentStartX, y: agentStartY },
+                goalPos: { x: goalPosX, y: goalPosY },
+                cars: customCars
+            };
+            
+            // Set simulation speed and max steps
+            window.customSimulationSpeed = simulationSpeed;
+            window.customMaxSteps = maxSteps;
+            
+            // Enable start button
+            document.getElementById('start-btn').disabled = false;
+            
+            // Show status message
+            updateStatus('Custom configuration created. Click Start to begin simulation.', 'info');
+            
+            // Close modal
+            customModal.classList.remove('active');
+            modalOverlay.classList.remove('active');
         });
     </script>
 </body>
