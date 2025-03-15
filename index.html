@@ -1240,6 +1240,71 @@
                 gap: 0.5rem;
             }
         }
+        
+        /* Custom theme for the custom configuration card */
+        .custom-theme {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            border-color: #a78bfa;
+        }
+        
+        .custom-theme .config-icon {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .custom-theme h3, 
+        .custom-theme p, 
+        .custom-theme .config-preview {
+            color: white;
+        }
+        
+        .custom-theme .config-preview {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        .custom-theme:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
+        }
+        
+        /* Fix the gap at the bottom */
+        .layout-container {
+            gap: 0.75rem;
+            margin-bottom: 0;
+            min-height: calc(100vh - 8rem);
+        }
+        
+        .simulation-column {
+            height: calc(100vh - 8rem);
+        }
+        
+        .canvas-wrapper {
+            height: calc(100vh - 8rem);
+        }
+        
+        .footer {
+            margin-top: 0;
+            padding: 0.5rem 0;
+        }
+        
+        @media (max-width: 1024px) {
+            .layout-container {
+                min-height: auto;
+            }
+            
+            .canvas-wrapper {
+                height: calc(100vh - 9rem);
+            }
+        }
+        
+        /* Make config cards more compact */
+        .config-card {
+            margin-bottom: 0.5rem;
+        }
+        
+        .guide-card {
+            margin-bottom: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -1306,27 +1371,28 @@
                     </h2>
                     
                     <div class="config-selector">
-                        <div class="config-card" data-config="1">
+                        <div class="config-card" id="config-1" data-config="1">
                             <div class="config-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
-                                    <polyline points="8 12 12 16 16 12"></polyline>
-                                    <line x1="12" y1="8" x2="12" y2="16"></line>
+                                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
                                 </svg>
                             </div>
                             <h3>Config 1</h3>
                             <p>Basic scenario with 17 cars</p>
                             <div class="config-preview">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
-                                Preview
+                                <span>Preview</span>
                             </div>
                         </div>
-                        <div class="config-card" data-config="2">
+                        
+                        <div class="config-card" id="config-2" data-config="2">
                             <div class="config-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="8.5" cy="7" r="4"></circle>
                                     <line x1="20" y1="8" x2="20" y2="14"></line>
@@ -1336,18 +1402,19 @@
                             <h3>Config 2</h3>
                             <p>Different car arrangement</p>
                             <div class="config-preview">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
-                                Preview
+                                <span>Preview</span>
                             </div>
                         </div>
-                        <div class="config-card" data-config="3">
+                        
+                        <div class="config-card" id="config-3" data-config="3">
                             <div class="config-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <circle cx="12" cy="12" r="10"></circle>
-                                    <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                                    <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
                                     <line x1="9" y1="9" x2="9.01" y2="9"></line>
                                     <line x1="15" y1="9" x2="15.01" y2="9"></line>
                                 </svg>
@@ -1355,17 +1422,18 @@
                             <h3>Config 3</h3>
                             <p>Alternative starting position</p>
                             <div class="config-preview">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
-                                Preview
+                                <span>Preview</span>
                             </div>
                         </div>
-                        <div class="config-card" data-config="4">
+                        
+                        <div class="config-card" id="config-4" data-config="4">
                             <div class="config-icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>
                                 </svg>
                             </div>
                             <h3>Config 4</h3>
