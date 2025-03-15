@@ -58,6 +58,7 @@
             margin: 0;
             min-height: 100vh;
             position: relative;
+            overflow-x: hidden;
         }
         
         body::before {
@@ -78,7 +79,7 @@
         .header {
             background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
             color: white;
-            padding: 1.5rem 0;
+            padding: 1rem 0;
             text-align: center;
             box-shadow: var(--shadow-lg);
             position: sticky;
@@ -114,8 +115,8 @@
         
         .header h1 {
             font-weight: 700;
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
+            font-size: 2rem;
+            margin-bottom: 0.25rem;
             position: relative;
             z-index: 2;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -129,19 +130,27 @@
             margin: 0 auto;
             position: relative;
             z-index: 2;
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
         
         .container {
-            max-width: var(--content-width);
-            margin: 2rem auto;
+            max-width: 100%;
+            margin: 1rem auto;
             padding: 0 1.5rem;
         }
         
         @media (max-width: 768px) {
             .container {
-                padding: 0 1rem;
-                margin: 1rem auto;
+                padding: 0 0.75rem;
+                margin: 0.5rem auto;
+            }
+            
+            .layout-container {
+                gap: 0.75rem;
+            }
+            
+            .canvas-wrapper {
+                height: calc(100vh - 16rem);
             }
         }
         
@@ -149,8 +158,8 @@
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-lg);
-            padding: 1.75rem;
-            margin-bottom: 1.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.7);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -183,14 +192,16 @@
         
         @media (min-width: 1024px) {
             .layout-container {
-                grid-template-columns: 380px 1fr;
-                min-height: calc(100vh - 13rem);
+                grid-template-columns: 280px 1fr;
+                min-height: calc(100vh - 11rem);
+                gap: 1rem;
+                position: relative;
             }
             
             .simulation-column {
                 position: sticky;
-                top: 6rem;
-                height: calc(100vh - 13rem);
+                top: 5rem;
+                height: calc(100vh - 11rem);
                 overflow-y: auto;
                 display: flex;
                 flex-direction: column;
@@ -200,6 +211,8 @@
                 flex: 1;
                 display: flex;
                 flex-direction: column;
+                height: 100%;
+                position: relative;
             }
             
             .canvas-wrapper {
@@ -207,6 +220,19 @@
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                height: calc(100vh - 11rem);
+                max-height: none;
+            }
+            
+            .floating-controls {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                z-index: 50;
+                display: flex;
+                flex-direction: column;
+                gap: 0.75rem;
+                width: 250px;
             }
         }
         
@@ -222,12 +248,12 @@
         }
         
         .card-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 1.75rem;
+            margin-bottom: 1.25rem;
             color: var(--gray-800);
             border-bottom: 2px solid var(--gray-200);
-            padding-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
             position: relative;
             display: flex;
             align-items: center;
@@ -246,9 +272,9 @@
         
         .config-selector {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
         }
         
         @media (min-width: 1024px) {
@@ -259,7 +285,7 @@
         
         .config-card {
             background-color: rgba(255, 255, 255, 0.8);
-            padding: 1.5rem;
+            padding: 1.25rem;
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: var(--transition);
@@ -341,8 +367,8 @@
         }
         
         .config-card h3 {
-            font-size: 1.2rem;
-            margin-bottom: 0.75rem;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
             color: var(--gray-800);
             transition: var(--transition);
         }
@@ -352,7 +378,7 @@
         }
         
         .config-card p {
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             color: var(--gray-600);
             margin-bottom: 0.5rem;
         }
@@ -374,23 +400,28 @@
         }
         
         .simulation-container {
-            margin-top: 2rem;
+            margin-top: 0;
             text-align: center;
             position: relative;
+            height: 100%;
         }
         
         .canvas-wrapper {
             background: linear-gradient(135deg, rgba(30, 58, 138, 0.1), rgba(79, 70, 229, 0.15));
             border-radius: var(--border-radius-lg);
-            padding: 1rem;
+            padding: 0.75rem;
             box-shadow: var(--shadow-lg);
             margin: 0 auto;
-            max-width: 1050px;
+            max-width: 100%;
             position: relative;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.5);
             overflow: hidden;
             transition: var(--transition);
+            height: calc(100vh - 15rem);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
         .canvas-wrapper::before {
@@ -442,7 +473,10 @@
             margin: 0 auto;
             background-color: transparent;
             max-width: 100%;
+            max-height: 100%;
             height: auto;
+            width: auto;
+            object-fit: contain;
             display: block;
             box-shadow: 0 0 20px rgba(79, 70, 229, 0.2);
             transition: var(--transition);
@@ -495,18 +529,27 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 1rem;
-            margin-top: 1.75rem;
+            gap: 0.75rem;
+            margin-top: 1.25rem;
             flex-wrap: wrap;
         }
         
+        .floating-controls .controls {
+            flex-direction: column;
+            margin-top: 0;
+        }
+        
+        .floating-controls .status {
+            margin-top: 0.75rem;
+        }
+        
         button {
-            padding: 0.85rem 1.75rem;
+            padding: 0.7rem 1.25rem;
             border: none;
             border-radius: var(--border-radius);
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
@@ -605,8 +648,8 @@
         }
         
         .status {
-            margin-top: 1.75rem;
-            padding: 1rem 1.25rem;
+            margin-top: 1.25rem;
+            padding: 0.75rem 1rem;
             border-radius: var(--border-radius);
             text-align: center;
             font-weight: 500;
@@ -617,6 +660,7 @@
             transition: var(--transition);
             transform-origin: center;
             animation: statusAppear 0.3s ease-out;
+            font-size: 0.9rem;
         }
         
         @keyframes statusAppear {
@@ -670,8 +714,8 @@
             background: linear-gradient(135deg, var(--gray-800), var(--gray-900));
             color: white;
             text-align: center;
-            padding: 2rem 0;
-            margin-top: 3rem;
+            padding: 1rem 0;
+            margin-top: 1rem;
             position: relative;
             overflow: hidden;
         }
@@ -769,23 +813,32 @@
         
         @media (max-width: 480px) {
             .controls {
-                flex-direction: column;
-                align-items: stretch;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.5rem;
             }
             
             button {
-                width: 100%;
+                width: auto;
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
             }
             
             .header p {
-                font-size: 1rem;
-                padding: 0 1rem;
+                font-size: 0.9rem;
+                padding: 0 0.5rem;
+            }
+            
+            .canvas-wrapper {
+                height: calc(100vh - 18rem);
             }
         }
         
         /* User Guide Styles */
         .guide-card {
-            margin-bottom: 1.75rem;
+            margin-bottom: 1rem;
             background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(239, 246, 255, 0.9));
             border-left: none;
             position: relative;
@@ -857,7 +910,7 @@
         .guide-content {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 1rem;
             max-height: 1000px;
             overflow: hidden;
             transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1);
@@ -869,7 +922,7 @@
         
         .guide-step {
             display: flex;
-            gap: 1rem;
+            gap: 0.75rem;
             align-items: flex-start;
             position: relative;
         }
@@ -907,21 +960,21 @@
         }
         
         .step-content h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
             color: var(--gray-800);
         }
         
         .step-content p {
             color: var(--gray-600);
-            font-size: 0.95rem;
-            line-height: 1.5;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
         
         .guide-note {
             background-color: rgba(224, 242, 254, 0.5);
             border-radius: var(--border-radius);
-            padding: 1.25rem;
+            padding: 1rem;
             border-left: none;
             position: relative;
             overflow: hidden;
@@ -951,13 +1004,19 @@
         
         .guide-note p {
             color: var(--gray-700);
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-size: 0.9rem;
+            line-height: 1.5;
         }
         
         .guide-note strong {
             color: var(--info-color);
             font-weight: 600;
+        }
+        
+        /* Goal flag styling - make it bigger */
+        .goal-flag {
+            transform: scale(1.5);
+            filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.6));
         }
     </style>
 </head>
@@ -1116,35 +1175,37 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="controls">
-                        <button id="start-btn" disabled>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                            </svg>
-                            Start Simulation
-                        </button>
-                        <button id="pause-btn" disabled>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
-                            </svg>
-                            Pause
-                        </button>
-                        <button id="reset-btn" disabled>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                            </svg>
-                            Reset
-                        </button>
-                    </div>
-
-                    <div id="status" class="status info">Please select a configuration to begin.</div>
                 </div>
             </div>
 
             <!-- Right Column: Simulation Canvas -->
             <div class="simulation-column">
                 <div class="simulation-container">
+                    <!-- Floating Controls at top right -->
+                    <div class="floating-controls">
+                        <div class="controls">
+                            <button id="start-btn" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                                </svg>
+                                Start Simulation
+                            </button>
+                            <button id="pause-btn" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+                                </svg>
+                                Pause
+                            </button>
+                            <button id="reset-btn" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                                </svg>
+                                Reset
+                            </button>
+                        </div>
+                        <div id="status" class="status info">Please select a configuration to begin.</div>
+                    </div>
+                    
                     <div class="canvas-wrapper">
                         <canvas id="simulation-canvas" width="900" height="900"></canvas>
                         <div class="simulation-loading" id="simulation-loading">

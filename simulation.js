@@ -148,7 +148,7 @@ function loadCarImages() {
     
     // Add a flag image for the goal
     const flagImg = new Image();
-    flagImg.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="%2310b981" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/></svg>`;
+    flagImg.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="%2310b981" stroke="%23064e3b" stroke-width="0.7" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/></svg>`;
     carImages['flag'] = flagImg;
 }
 
@@ -390,14 +390,17 @@ function drawSimulation() {
     }
     
     // Draw goal with glow effect
-    ctx.shadowColor = 'rgba(16, 185, 129, 0.7)';
-    ctx.shadowBlur = 15;
+    ctx.shadowColor = 'rgba(16, 185, 129, 0.9)';
+    ctx.shadowBlur = 20;
+    
+    // Make the flag significantly bigger
+    const flagSize = cellSize * 1.8; // Increased size by 80%
     ctx.drawImage(
         carImages['flag'],
-        goal.x * cellSize + cellSize/6,
-        goal.y * cellSize + cellSize/6,
-        cellSize*2/3,
-        cellSize*2/3
+        goal.x * cellSize + (cellSize - flagSize)/2,
+        goal.y * cellSize + (cellSize - flagSize)/2,
+        flagSize,
+        flagSize
     );
     
     // Reset shadow
