@@ -146,9 +146,23 @@ function loadCarImages() {
         carImages[color] = img;
     });
     
-    // Add a flag image for the goal
+    // Add a checkered flag image for the goal instead of green flag
     const flagImg = new Image();
-    flagImg.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24"><path fill="%2310b981" stroke="%23064e3b" stroke-width="0.7" d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6h-5.6z"/></svg>`;
+    flagImg.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+    <rect x="5" y="4" width="2" height="17" fill="%23333333" stroke="%23000000" stroke-width="0.5"/>
+    <rect x="7" y="4" width="3" height="3" fill="%23000000"/>
+    <rect x="10" y="4" width="3" height="3" fill="%23ffffff"/>
+    <rect x="13" y="4" width="3" height="3" fill="%23000000"/>
+    <rect x="16" y="4" width="3" height="3" fill="%23ffffff"/>
+    <rect x="7" y="7" width="3" height="3" fill="%23ffffff"/>
+    <rect x="10" y="7" width="3" height="3" fill="%23000000"/>
+    <rect x="13" y="7" width="3" height="3" fill="%23ffffff"/>
+    <rect x="16" y="7" width="3" height="3" fill="%23000000"/>
+    <rect x="7" y="10" width="3" height="3" fill="%23000000"/>
+    <rect x="10" y="10" width="3" height="3" fill="%23ffffff"/>
+    <rect x="13" y="10" width="3" height="3" fill="%23000000"/>
+    <rect x="16" y="10" width="3" height="3" fill="%23ffffff"/>
+    </svg>`;
     carImages['flag'] = flagImg;
 }
 
@@ -390,11 +404,11 @@ function drawSimulation() {
     }
     
     // Draw goal with glow effect
-    ctx.shadowColor = 'rgba(16, 185, 129, 0.9)';
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
     ctx.shadowBlur = 20;
     
     // Make the flag significantly bigger
-    const flagSize = cellSize * 1.8; // Increased size by 80%
+    const flagSize = cellSize * 2.2; // Increased size for checkered flag
     ctx.drawImage(
         carImages['flag'],
         goal.x * cellSize + (cellSize - flagSize)/2,
@@ -413,24 +427,28 @@ function drawSimulation() {
         ctx.shadowColor = `rgba(${car.color === 'red' ? '239, 68, 68' : car.color === 'blue' ? '37, 99, 235' : car.color === 'green' ? '16, 185, 129' : '0, 0, 0'}, 0.6)`;
         ctx.shadowBlur = 10;
         
+        // Increased car size by 20%
+        const carSize = cellSize * 0.8;
         ctx.drawImage(
             carImages[car.color],
-            car.x * cellSize + cellSize/6,
-            car.y * cellSize + cellSize/6,
-            cellSize*2/3,
-            cellSize*2/3
+            car.x * cellSize + (cellSize - carSize)/2,
+            car.y * cellSize + (cellSize - carSize)/2,
+            carSize,
+            carSize
         );
     });
     
-    // Draw agent with glow effect
+    // Draw agent with glow effect and increased size
     ctx.shadowColor = 'rgba(255, 255, 255, 0.9)';
     ctx.shadowBlur = 15;
+    // Increased agent car size by 20%
+    const agentSize = cellSize * 0.8;
     ctx.drawImage(
         carImages['white'],
-        agent.x * cellSize + cellSize/6,
-        agent.y * cellSize + cellSize/6,
-        cellSize*2/3,
-        cellSize*2/3
+        agent.x * cellSize + (cellSize - agentSize)/2,
+        agent.y * cellSize + (cellSize - agentSize)/2,
+        agentSize,
+        agentSize
     );
     
     // Reset shadow

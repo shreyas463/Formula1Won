@@ -248,9 +248,9 @@
         }
         
         .card-title {
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin-bottom: 1.25rem;
+            margin-bottom: 0.75rem;
             color: var(--gray-800);
             border-bottom: 2px solid var(--gray-200);
             padding-bottom: 0.5rem;
@@ -273,23 +273,24 @@
         .config-selector {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
         }
         
         @media (min-width: 1024px) {
             .config-selector {
                 grid-template-columns: 1fr;
+                gap: 0.4rem;
             }
         }
         
         .config-card {
             background-color: rgba(255, 255, 255, 0.8);
-            padding: 1.25rem;
+            padding: 0.6rem;
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: var(--transition);
-            border: 2px solid var(--gray-200);
+            border: 1px solid var(--gray-200);
             box-shadow: var(--shadow);
             position: relative;
             overflow: hidden;
@@ -344,9 +345,9 @@
         }
         
         .config-icon {
-            margin-bottom: 1rem;
-            width: 40px;
-            height: 40px;
+            margin-bottom: 0.4rem;
+            width: 24px;
+            height: 24px;
             background-color: rgba(79, 70, 229, 0.1);
             border-radius: 50%;
             display: flex;
@@ -367,8 +368,8 @@
         }
         
         .config-card h3 {
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
             color: var(--gray-800);
             transition: var(--transition);
         }
@@ -378,19 +379,20 @@
         }
         
         .config-card p {
-            font-size: 0.9rem;
+            font-size: 0.75rem;
             color: var(--gray-600);
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.2rem;
+            line-height: 1.2;
         }
         
         .config-preview {
             margin-top: auto;
-            padding-top: 0.75rem;
-            font-size: 0.85rem;
+            padding-top: 0.4rem;
+            font-size: 0.7rem;
             color: var(--primary-color);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.3rem;
             opacity: 0.8;
             transition: var(--transition);
         }
