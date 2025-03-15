@@ -1267,6 +1267,30 @@
             box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.5);
         }
         
+        /* Position custom config at bottom right */
+        @media (max-width: 1023px) {
+            .config-selector {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            #custom-config {
+                grid-column: 2;
+                grid-row: 3;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .config-selector {
+                grid-template-columns: 1fr;
+            }
+            
+            #custom-config {
+                grid-column: 1;
+                grid-row: 6;
+            }
+        }
+        
         /* Fix the gap at the bottom */
         .layout-container {
             gap: 0.75rem;
@@ -1439,13 +1463,14 @@
                             <h3>Config 4</h3>
                             <p>Another variation</p>
                             <div class="config-preview">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
-                                Preview
+                                <span>Preview</span>
                             </div>
                         </div>
+                        
                         <div class="config-card" id="config-5" data-config="5">
                             <div class="config-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1462,6 +1487,7 @@
                                 <span>Preview</span>
                             </div>
                         </div>
+                        
                         <div class="config-card custom-theme" id="custom-config" data-config="custom">
                             <div class="config-icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
