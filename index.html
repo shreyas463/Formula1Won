@@ -20,6 +20,7 @@
             --border-radius: 12px;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
         }
         
         * {
@@ -60,7 +61,9 @@
             padding: 1.5rem 0;
             text-align: center;
             box-shadow: var(--shadow);
-            position: relative;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             overflow: hidden;
         }
         
@@ -93,19 +96,78 @@
         }
         
         .container {
-            max-width: 1200px;
-            margin: 2rem auto;
+            max-width: 1400px;
+            margin: 1.5rem auto;
             padding: 0 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+                margin: 1rem auto;
+            }
         }
         
         .card {
             background-color: rgba(255, 255, 255, 0.9);
             border-radius: var(--border-radius);
             box-shadow: var(--shadow-lg);
-            padding: 2rem;
-            margin-bottom: 2rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Modern layout with two columns */
+        .layout-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .layout-container {
+                grid-template-columns: 350px 1fr;
+                min-height: calc(100vh - 13rem);
+            }
+            
+            .simulation-column {
+                position: sticky;
+                top: 6rem;
+                height: calc(100vh - 13rem);
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .simulation-container {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .canvas-wrapper {
+                flex: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 1023px) {
+            .simulation-container {
+                margin-top: 1rem;
+            }
+            
+            .canvas-wrapper {
+                margin-bottom: 1.5rem;
+            }
         }
         
         .card-title {
@@ -122,6 +184,12 @@
             grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             gap: 1.5rem;
             margin-bottom: 2rem;
+        }
+        
+        @media (min-width: 1024px) {
+            .config-selector {
+                grid-template-columns: 1fr;
+            }
         }
         
         .config-card {
@@ -163,6 +231,7 @@
             background-color: rgba(239, 246, 255, 0.9);
             border-color: var(--primary-color);
             box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+            transform: translateY(-3px);
         }
         
         .config-card.selected::before {
@@ -190,12 +259,33 @@
             border-radius: var(--border-radius);
             padding: 0.75rem;
             box-shadow: var(--shadow-lg);
-            margin: 1.5rem auto;
+            margin: 0 auto;
             max-width: 1050px;
             position: relative;
             backdrop-filter: blur(5px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .canvas-wrapper:hover {
+            box-shadow: 0 0 30px rgba(37, 99, 235, 0.4);
+        }
+        
+        @media (min-width: 1024px) {
+            .canvas-wrapper {
+                margin: 0;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            
+            #simulation-canvas {
+                max-height: 100%;
+                max-width: 100%;
+                object-fit: contain;
+            }
         }
         
         #simulation-canvas {
@@ -230,6 +320,17 @@
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        
+        button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px -1px rgba(0, 0, 0, 0.15);
+        }
+        
+        button:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
         }
         
         button svg {
@@ -304,7 +405,7 @@
             color: white;
             text-align: center;
             padding: 1.5rem;
-            margin-top: 3rem;
+            margin-top: 2rem;
             position: relative;
             overflow: hidden;
         }
@@ -349,13 +450,35 @@
             .card {
                 padding: 1.5rem;
             }
+            
+            .controls {
+                gap: 0.5rem;
+            }
+            
+            button {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
         }
         
         /* User Guide Styles */
         .guide-card {
-            margin-bottom: 2rem;
+            margin-bottom: 1.5rem;
             background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(239, 246, 255, 0.9));
             border-left: 4px solid var(--info-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .guide-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle at top right, rgba(14, 165, 233, 0.1), transparent 70%);
+            pointer-events: none;
         }
         
         .guide-card .card-title {
@@ -441,6 +564,19 @@
             border-radius: 8px;
             padding: 1rem;
             border-left: 3px solid var(--info-color);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .guide-note::before {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            right: -20px;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle at bottom right, rgba(14, 165, 233, 0.1), transparent 70%);
+            pointer-events: none;
         }
         
         .guide-note p {
@@ -467,102 +603,110 @@
     </header>
 
     <div class="container">
-        <!-- User Guide Box -->
-        <div class="card guide-card">
-            <h2 class="card-title" id="guide-title">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="guide-icon">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="12" y1="16" x2="12" y2="12"></line>
-                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                </svg>
-                Quick Guide
-                <button class="toggle-guide" id="toggle-guide" aria-label="Toggle guide visibility">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron-down">
-                        <polyline points="6 9 12 15 18 9"></polyline>
-                    </svg>
-                </button>
-            </h2>
-            <div class="guide-content" id="guide-content">
-                <div class="guide-step">
-                    <div class="step-number">1</div>
-                    <div class="step-content">
-                        <h3>Select a Configuration</h3>
-                        <p>Choose one of the five traffic scenarios to test the self-driving car in different conditions.</p>
+        <div class="layout-container">
+            <!-- Left Column: Guide and Configuration -->
+            <div class="controls-column">
+                <!-- User Guide Box -->
+                <div class="card guide-card">
+                    <h2 class="card-title" id="guide-title">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="guide-icon">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        Quick Guide
+                        <button class="toggle-guide" id="toggle-guide" aria-label="Toggle guide visibility">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="chevron-down">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+                    </h2>
+                    <div class="guide-content" id="guide-content">
+                        <div class="guide-step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h3>Select a Configuration</h3>
+                                <p>Choose one of the five traffic scenarios to test the self-driving car in different conditions.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h3>Start the Simulation</h3>
+                                <p>Click the Start button to watch the white car (agent) navigate to its goal while avoiding other vehicles.</p>
+                            </div>
+                        </div>
+                        <div class="guide-step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h3>Watch and Control</h3>
+                                <p>Observe how the car finds its path. Use Pause to freeze the simulation or Reset to try again.</p>
+                            </div>
+                        </div>
+                        <div class="guide-note">
+                            <p><strong>What to expect:</strong> The white car will calculate the shortest path to the goal (flag) while dynamically avoiding other vehicles that move randomly. The blue line shows the car's path history.</p>
+                        </div>
                     </div>
                 </div>
-                <div class="guide-step">
-                    <div class="step-number">2</div>
-                    <div class="step-content">
-                        <h3>Start the Simulation</h3>
-                        <p>Click the Start button to watch the white car (agent) navigate to its goal while avoiding other vehicles.</p>
+
+                <div class="card">
+                    <h2 class="card-title">Select Configuration</h2>
+                    
+                    <div class="config-selector">
+                        <div class="config-card" data-config="1">
+                            <h3>Config 1</h3>
+                            <p>Basic scenario with 17 cars</p>
+                        </div>
+                        <div class="config-card" data-config="2">
+                            <h3>Config 2</h3>
+                            <p>Different car arrangement</p>
+                        </div>
+                        <div class="config-card" data-config="3">
+                            <h3>Config 3</h3>
+                            <p>Alternative starting position</p>
+                        </div>
+                        <div class="config-card" data-config="4">
+                            <h3>Config 4</h3>
+                            <p>Another variation</p>
+                        </div>
+                        <div class="config-card" data-config="5">
+                            <h3>Config 5</h3>
+                            <p>Complex scenario</p>
+                        </div>
                     </div>
-                </div>
-                <div class="guide-step">
-                    <div class="step-number">3</div>
-                    <div class="step-content">
-                        <h3>Watch and Control</h3>
-                        <p>Observe how the car finds its path. Use Pause to freeze the simulation or Reset to try again.</p>
+
+                    <div class="controls">
+                        <button id="start-btn" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
+                            </svg>
+                            Start Simulation
+                        </button>
+                        <button id="pause-btn" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
+                            </svg>
+                            Pause
+                        </button>
+                        <button id="reset-btn" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                            </svg>
+                            Reset
+                        </button>
                     </div>
-                </div>
-                <div class="guide-note">
-                    <p><strong>What to expect:</strong> The white car will calculate the shortest path to the goal (flag) while dynamically avoiding other vehicles that move randomly. The blue line shows the car's path history.</p>
+
+                    <div id="status" class="status info">Please select a configuration to begin.</div>
                 </div>
             </div>
-        </div>
 
-        <div class="card">
-            <h2 class="card-title">Select Configuration</h2>
-            
-            <div class="config-selector">
-                <div class="config-card" data-config="1">
-                    <h3>Config 1</h3>
-                    <p>Basic scenario with 17 cars</p>
+            <!-- Right Column: Simulation Canvas -->
+            <div class="simulation-column">
+                <div class="simulation-container">
+                    <div class="canvas-wrapper">
+                        <canvas id="simulation-canvas" width="900" height="900"></canvas>
+                    </div>
                 </div>
-                <div class="config-card" data-config="2">
-                    <h3>Config 2</h3>
-                    <p>Different car arrangement</p>
-                </div>
-                <div class="config-card" data-config="3">
-                    <h3>Config 3</h3>
-                    <p>Alternative starting position</p>
-                </div>
-                <div class="config-card" data-config="4">
-                    <h3>Config 4</h3>
-                    <p>Another variation</p>
-                </div>
-                <div class="config-card" data-config="5">
-                    <h3>Config 5</h3>
-                    <p>Complex scenario</p>
-                </div>
-            </div>
-
-            <div class="simulation-container">
-                <div class="canvas-wrapper">
-                    <canvas id="simulation-canvas" width="900" height="900"></canvas>
-                </div>
-                
-                <div class="controls">
-                    <button id="start-btn" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 0 1 0 1.972l-11.54 6.347a1.125 1.125 0 0 1-1.667-.986V5.653Z" />
-                        </svg>
-                        Start Simulation
-                    </button>
-                    <button id="pause-btn" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5" />
-                        </svg>
-                        Pause
-                    </button>
-                    <button id="reset-btn" disabled>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                        </svg>
-                        Reset
-                    </button>
-                </div>
-
-                <div id="status" class="status info">Please select a configuration to begin.</div>
             </div>
         </div>
     </div>
